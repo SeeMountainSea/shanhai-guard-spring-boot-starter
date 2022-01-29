@@ -1,10 +1,10 @@
-# ShanHaiGuard 
+# 山海Web守卫者(ShanHaiGuard)
 
-<img src="https://images.gitee.com/uploads/images/2022/0114/203144_2b83df96_5663504.jpeg" alt="LOGO" title="img-1642163195030b05d66709b2d218da6c512ec262643b8.jpg" style="zoom:50%;" />
+<img src="https://images.gitee.com/uploads/images/2022/0114/203144_2b83df96_5663504.jpeg" alt="LOGO" title="img-1642163195030b05d66709b2d218da6c512ec262643b8.jpg"  height="200px" />
 
 ------
 
-**ShanHaiGuard **为 Spring Boot 通用安全增强组件,主要包含以下能力：
+**ShanHaiGuard **为 一款Spring Boot 通用安全增强组件,主要包含以下能力：
 
 - 支持全局文件上传安全检测 @Ver1.0.3+支持
 
@@ -20,7 +20,7 @@
 
 - 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.2+支持
 
-  注：由于SayrmbGuard 是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
+  注：由于ShanHaiGuard是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
   
   **注：由于目前新域名尚未使用，临时使用旧域名。**
 
@@ -34,7 +34,7 @@
 </dependency>
 ```
 
-# 2.启用LuWu**Guard** 安全防护组件
+# 2.启用ShanHaiGuard安全防护组件
 
 ```java
 import com.sayrmb.guard.annotation.EnableSayHiGuard;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableSayHiGuard
-public class SayrmbGuardConfig {
+public class ShanHaiGuardConfig {
 }
 ```
 
