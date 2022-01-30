@@ -6,42 +6,39 @@
 
 ShanHaiGuard 为 一款Spring Boot 通用安全增强组件,主要包含以下能力：
 
-- 支持全局文件上传安全检测 @Ver1.0.3+支持
+- 支持全局文件上传安全检测 @Ver1.0.0+支持
 
-- 支持单个方法文件上传安全检测 @Ver1.0.4+支持
+- 支持单个方法文件上传安全检测 @Ver1.0.0+支持
 
-- 支持SQL注入&XSS注入安全检测 @Ver1.0.1+支持
+- 支持SQL注入&XSS注入安全检测 @Ver1.0.0+支持
 
-- 支持Mybatis SQL查询安全审核（1.x仅支持mysql）@Ver1.0.1+支持
+- 支持Mybatis SQL查询安全审核（1.x仅支持mysql）@Ver1.0.0+支持
 
-- 支持密码复杂度检验 @Ver1.0.1+支持
+- 支持密码复杂度检验 @Ver1.0.0+支持
 
-- 支持拓展SpringBoot POST数据定制化解析，从而实现全局自动数据解析能力(例如数据解码,动态修改数据) @Ver1.0.1+支持
+- 支持拓展SpringBoot POST数据定制化解析，从而实现全局自动数据解析能力(例如数据解码,动态修改数据) @Ver1.0.0+支持
 
-- 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.2+支持
+- 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.0+支持
 
   注：由于ShanHaiGuard是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
   
-  **注：由于目前新域名尚未使用，临时使用旧域名。**
+  
 
 # 1.引入依赖
 
 ```xml
-<dependency>
-  <groupId>com.sayrmb.guard</groupId>
-  <artifactId>sayrmb-guard-spring-boot-starter</artifactId>
-  <version>1.0.3</version>
-</dependency>
+        <dependency>
+            <groupId>com.wangshanhai.guard</groupId>
+            <artifactId>shanhai-guard-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 ```
 
 # 2.启用ShanHaiGuard安全防护组件
 
 ```java
-import EnableSayHiGuard;
-import org.springframework.context.annotation.Configuration;
-
 @Configuration
-@EnableSayHiGuard
+@EnableShanHaiGuard
 public class ShanHaiGuardConfig {
 }
 ```
@@ -53,7 +50,7 @@ public class ShanHaiGuardConfig {
 配置参数如下
 
 ```yaml
-sayhi:
+shanhai:
   fileguard:
     enable: true  #启用组件
     pathPatterns: #检测范围
@@ -105,7 +102,7 @@ public String bytes(HttpServletRequest request, MultipartFile file){
 配置参数如下
 
 ```yaml
-sayhi:
+shanhai:
   passwdguard:
     enable: true #启用组件
     minLength: 4 #最小长度
@@ -131,7 +128,7 @@ passwdService.checkPasswd(passwd)
 配置参数如下
 
 ```yaml
-sayhi:
+shanhai:
   webguard:
     enable: true #启用组件
     path-patterns: #检测范围
@@ -143,7 +140,7 @@ sayhi:
 配置参数如下
 
 ```yaml
-sayhi:
+shanhai:
   mysqlguard:
     enable: true       #启用组件
     where-exist: false  #包含where语句
@@ -156,7 +153,7 @@ sayhi:
 配置参数如下
 
 ```yaml
-sayhi:
+shanhai:
   decodebody:
     enable: true #启用组件
 ```
@@ -185,7 +182,7 @@ public interface DecodeBodyService {
 使用PBE解密算法样例配置参数如下：
 
 ```yaml
-sayhi:
+shanhai:
   envdecode:
     market:
       algorithm: PBE
@@ -242,7 +239,7 @@ public  abstract class PropertyDecode {
 在SpringBoot的配置文件中指定自己新增的自定义解密类，如下所示：
 
 ```yaml
-sayhi:
+shanhai:
  envdecode:
     # 自定义解密类的优先级最高
     className: 'com.xxx.RSAPropertyDecode'
