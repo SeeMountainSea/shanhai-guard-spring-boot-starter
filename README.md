@@ -234,7 +234,7 @@ public  abstract class PropertyDecode {
 }
 ```
 
-**注：SpringBoot配置文件中sayhi.envdecode打头的参数都会传递到envProperties中，可以自己获取自己配置的自定义参数。**
+**注：SpringBoot配置文件中shanhai.envdecode打头的参数都会传递到envProperties中，可以自己获取自己配置的自定义参数。**
 
 在SpringBoot的配置文件中指定自己新增的自定义解密类，如下所示：
 
