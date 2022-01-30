@@ -1,0 +1,331 @@
+{
+  "groups": [
+    {
+      "name": "sayhi.decodebody",
+      "type": "com.sayrmb.guard.config.DecodeBodyConfig",
+      "sourceType": "com.sayrmb.guard.config.DecodeBodyConfig"
+    },
+    {
+      "name": "sayhi.fileguard",
+      "type": "com.sayrmb.guard.config.FileGuardConfig",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "sayhi.mysqlguard",
+      "type": "com.sayrmb.guard.config.MysqlGuardConfig",
+      "sourceType": "com.sayrmb.guard.config.MysqlGuardConfig"
+    },
+    {
+      "name": "sayhi.passwdguard",
+      "type": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig"
+    },
+    {
+      "name": "sayhi.webguard",
+      "type": "com.sayrmb.guard.config.WebGuardConfig",
+      "sourceType": "com.sayrmb.guard.config.WebGuardConfig"
+    },
+    {
+      "name": "shanhai.decodebody",
+      "type": "com.wangshanhai.guard.config.DecodeBodyConfig",
+      "sourceType": "com.wangshanhai.guard.config.DecodeBodyConfig"
+    },
+    {
+      "name": "shanhai.fileguard",
+      "type": "com.wangshanhai.guard.config.FileGuardConfig",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "shanhai.mysqlguard",
+      "type": "com.wangshanhai.guard.config.MysqlGuardConfig",
+      "sourceType": "com.wangshanhai.guard.config.MysqlGuardConfig"
+    },
+    {
+      "name": "shanhai.passwdguard",
+      "type": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig"
+    },
+    {
+      "name": "shanhai.webguard",
+      "type": "com.wangshanhai.guard.config.WebGuardConfig",
+      "sourceType": "com.wangshanhai.guard.config.WebGuardConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "sayhi.decodebody.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.sayrmb.guard.config.DecodeBodyConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.fileguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.fileguard.exclude-path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "不拦截范围",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "sayhi.fileguard.file-real-check",
+      "type": "java.lang.Boolean",
+      "description": "开启文件类型二进制校验",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.fileguard.log-tarce",
+      "type": "java.lang.Boolean",
+      "description": "是否开启上传日志",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.fileguard.path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "拦截范围",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "sayhi.fileguard.suffix",
+      "type": "java.lang.String",
+      "description": "文件类型白名单",
+      "sourceType": "com.sayrmb.guard.config.FileGuardConfig",
+      "defaultValue": "jpg,gif,png,ico,bmp,jpeg"
+    },
+    {
+      "name": "sayhi.mysqlguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.sayrmb.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.mysqlguard.limit-exist",
+      "type": "java.lang.Boolean",
+      "description": "要求包含where语句",
+      "sourceType": "com.sayrmb.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.mysqlguard.query-limit",
+      "type": "java.lang.Integer",
+      "description": "每次查询数据的上限",
+      "sourceType": "com.sayrmb.guard.config.MysqlGuardConfig",
+      "defaultValue": 20000
+    },
+    {
+      "name": "sayhi.mysqlguard.where-exist",
+      "type": "java.lang.Boolean",
+      "description": "要求包含where语句",
+      "sourceType": "com.sayrmb.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.passwdguard.character-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含大小写字母",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.passwdguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.passwdguard.keyboard-not-exist",
+      "type": "java.lang.Boolean",
+      "description": "不包含键盘顺序",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.passwdguard.max-length",
+      "type": "java.lang.Integer",
+      "description": "密码最大位数",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": 16
+    },
+    {
+      "name": "sayhi.passwdguard.min-length",
+      "type": "java.lang.Integer",
+      "description": "密码最小位数",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": 8
+    },
+    {
+      "name": "sayhi.passwdguard.number-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含数字",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.passwdguard.symbol-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含特殊符号",
+      "sourceType": "com.sayrmb.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.webguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.sayrmb.guard.config.WebGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "sayhi.webguard.path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "拦截范围",
+      "sourceType": "com.sayrmb.guard.config.WebGuardConfig"
+    },
+    {
+      "name": "shanhai.decodebody.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.wangshanhai.guard.config.DecodeBodyConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.fileguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.fileguard.exclude-path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "不拦截范围",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "shanhai.fileguard.file-real-check",
+      "type": "java.lang.Boolean",
+      "description": "开启文件类型二进制校验",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.fileguard.log-tarce",
+      "type": "java.lang.Boolean",
+      "description": "是否开启上传日志",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.fileguard.path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "拦截范围",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig"
+    },
+    {
+      "name": "shanhai.fileguard.suffix",
+      "type": "java.lang.String",
+      "description": "文件类型白名单",
+      "sourceType": "com.wangshanhai.guard.config.FileGuardConfig",
+      "defaultValue": "jpg,gif,png,ico,bmp,jpeg"
+    },
+    {
+      "name": "shanhai.mysqlguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.wangshanhai.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.mysqlguard.limit-exist",
+      "type": "java.lang.Boolean",
+      "description": "要求包含where语句",
+      "sourceType": "com.wangshanhai.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.mysqlguard.query-limit",
+      "type": "java.lang.Integer",
+      "description": "每次查询数据的上限",
+      "sourceType": "com.wangshanhai.guard.config.MysqlGuardConfig",
+      "defaultValue": 20000
+    },
+    {
+      "name": "shanhai.mysqlguard.where-exist",
+      "type": "java.lang.Boolean",
+      "description": "要求包含where语句",
+      "sourceType": "com.wangshanhai.guard.config.MysqlGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.passwdguard.character-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含大小写字母",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.passwdguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.passwdguard.keyboard-not-exist",
+      "type": "java.lang.Boolean",
+      "description": "不包含键盘顺序",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.passwdguard.max-length",
+      "type": "java.lang.Integer",
+      "description": "密码最大位数",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": 16
+    },
+    {
+      "name": "shanhai.passwdguard.min-length",
+      "type": "java.lang.Integer",
+      "description": "密码最小位数",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": 8
+    },
+    {
+      "name": "shanhai.passwdguard.number-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含数字",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.passwdguard.symbol-exist",
+      "type": "java.lang.Boolean",
+      "description": "包含特殊符号",
+      "sourceType": "com.wangshanhai.guard.config.PasswdGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.webguard.enable",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "com.wangshanhai.guard.config.WebGuardConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "shanhai.webguard.path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "拦截范围",
+      "sourceType": "com.wangshanhai.guard.config.WebGuardConfig"
+    }
+  ],
+  "hints": []
+}
