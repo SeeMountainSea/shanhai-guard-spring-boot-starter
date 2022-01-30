@@ -1,10 +1,10 @@
-# 山海Web守卫者(ShanHaiGuard)
+# 山海Web守护者(ShanHaiGuard)
 
-<img src="https://images.gitee.com/uploads/images/2022/0114/203144_2b83df96_5663504.jpeg" alt="LOGO" title="img-1642163195030b05d66709b2d218da6c512ec262643b8.jpg"  height="200px" />
+<img src="logo.jpg"  height="200px" />
 
 ------
 
-**ShanHaiGuard **为 一款Spring Boot 通用安全增强组件,主要包含以下能力：
+ShanHaiGuard 为 一款Spring Boot 通用安全增强组件,主要包含以下能力：
 
 - 支持全局文件上传安全检测 @Ver1.0.3+支持
 
@@ -37,7 +37,7 @@
 # 2.启用ShanHaiGuard安全防护组件
 
 ```java
-import com.sayrmb.guard.annotation.EnableSayHiGuard;
+import EnableSayHiGuard;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
