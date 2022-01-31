@@ -1,10 +1,21 @@
-# 山海Web守护者(ShanHaiGuard)
+<div align="center">
+  <p>
+    <img src="logo.jpg"  height="200px" />
+  </p>
+  <p>山海Guard - 基于SpringBoot 的通用Web安全组件</p>
+  <p>ShanHaiGuard-based SpringBoot Web Security components</p>
+  <p>
+    <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/SeeMountainSea/shanhai-guard-spring-boot-starter"/></a>
+    <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/issues"><img alt="GitHub closed issues" src="https://img.shields.io/github/issues/SeeMountainSea/shanhai-guard-spring-boot-starter?color=009688"/></a>
+    <a href="https://github.com/topics/java"><img alt="GitHub top language" src="https://img.shields.io/github/languages/top/SeeMountainSea/shanhai-guard-spring-boot-starter?color=eb8031"/></a>
+    <br>
+    <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/find/master"><img alt="GitHub Code Size" src="https://img.shields.io/github/languages/code-size/SeeMountainSea/shanhai-guard-spring-boot-starter?color=795548"/></a>
+    <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/find/master"><img alt="GitHub Code Lines" src="https://img.shields.io/tokei/lines/github/SeeMountainSea/shanhai-guard-spring-boot-starter?color=37474F"/></a>
+    <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SeeMountainSea/shanhai-guard-spring-boot-starter?color=534BAE"/></a>
+  </p>
+</div>
 
-<img src="logo.jpg"  height="200px" />
-
-------
-
-ShanHaiGuard 为 一款Spring Boot 通用安全增强组件,主要包含以下能力：
+ShanHaiGuard 主要提供以下能力：
 
 - 支持全局文件上传安全检测 @Ver1.0.0+支持
 
