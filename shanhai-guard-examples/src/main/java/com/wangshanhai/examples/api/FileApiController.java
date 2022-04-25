@@ -29,6 +29,18 @@ public class FileApiController {
      * @param request
      * @return
      */
+    @RequestMapping(value = "/file/checkByDefRule")
+    @FileGuard(checkByRule = true)
+    @ResponseBody
+    public String checkByDefRule(HttpServletRequest request, MultipartFile file){
+        Logger.info("[file-upload-api]-name:{},contentType:{},size:{}",file.getName(),file.getContentType(),file.getSize());
+        return "success";
+    }
+    /**
+     * 文件上传测试样例
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/file/bytes/upload")
     @FileGuard(message = "只能上传图片文件",type = FileGuard.GuardType.BYTES,supportedFileTypes = {FileType.JPEG,FileType.PNG})
     @ResponseBody

@@ -3,6 +3,7 @@ package com.wangshanhai.guard.interceptor;
 import com.wangshanhai.guard.annotation.FileGuard;
 import com.wangshanhai.guard.annotation.FileType;
 import com.wangshanhai.guard.config.FileGuardConfig;
+import com.wangshanhai.guard.service.FileGuardRuleDefService;
 import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
 import org.apache.commons.io.IOUtils;
@@ -28,9 +29,14 @@ public class FileScanInterceptor extends HandlerInterceptorAdapter {
      * 配置参数
      */
     private FileGuardConfig fileGuardConfig;
+    /**
+     * 自定义文件校验规则
+     */
+    private FileGuardRuleDefService fileGuardRuleDefService;
 
-    public FileScanInterceptor(FileGuardConfig fileGuardConfig) {
+    public FileScanInterceptor(FileGuardConfig fileGuardConfig,FileGuardRuleDefService fileGuardRuleDefService) {
         this.fileGuardConfig = fileGuardConfig;
+        this.fileGuardRuleDefService=fileGuardRuleDefService;
     }
 
     @Override
@@ -50,10 +56,18 @@ public class FileScanInterceptor extends HandlerInterceptorAdapter {
                 MultipartFile multipartFile = multipartRequest.getFile(formKey);
                 if (!StringUtils.isEmpty(multipartFile.getOriginalFilename())) {
                     String filename = multipartFile.getOriginalFilename();
+                    if(fileGuardConfig.getLogTarce()){
+                        Logger.info("[file-upload-log]-url:{},file:{}",request.getRequestURI(),filename);
+                    }
+                    if(fileGuard!=null){
+                       if(fileGuard.skip()){
+                           return true;
+                       }
+                       if(fileGuard.checkByRule()){
+                            return fileGuardRuleDefService.isSafe(files);
+                       }
+                    }
                     if(checkFile(filename)){
-                        if(fileGuardConfig.getLogTarce()){
-                            Logger.info("[file-upload-log]-url:{},file:{}",request.getRequestURI(),filename);
-                        }
                         if(fileGuard!=null){
                             return checkGuard(multipartFile,fileGuard);
                         }

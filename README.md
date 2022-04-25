@@ -21,6 +21,8 @@ ShanHaiGuard 主要提供以下能力：
 
 - 支持单个方法文件上传安全检测 @Ver1.0.0+支持
 
+- 支持单个方法文件上传自定义安全校验规则 @Ver1.0.1+支持
+
 - 支持SQL注入&XSS注入安全检测 @Ver1.0.0+支持
 
 - 支持Mybatis SQL查询安全审核（1.x仅支持mysql）@Ver1.0.0+支持
@@ -41,7 +43,7 @@ ShanHaiGuard 主要提供以下能力：
         <dependency>
             <groupId>com.wangshanhai.guard</groupId>
             <artifactId>shanhai-guard-spring-boot-starter</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
 ```
 
@@ -72,7 +74,35 @@ shanhai:
 
 此处的配置为全局性配置，对于单个方法的校验，可以使用@FileGuard添加校验，参考下面样例的使用方式：
 
-1）通过文件后缀校验(GuardType.SUFFIX)
+1）跳过检验
+
+```java
+@FileGuard(skip  = true)
+```
+
+2）实现自定义规则检验
+
+```java
+@FileGuard(checkByRule = true)
+```
+
+ 注：如果启用该参数，需要实现FileGuardRuleDefService，否则将无法上传文件。
+
+```java
+public class FileGuardRuleDefServiceImpl implements FileGuardRuleDefService {
+    /**
+     * 表单key及对应的文件
+     * @param files 文件清单
+     * @return
+     */
+    @Override
+    public boolean isSafe(Map<String, MultipartFile> files) {
+        return true;
+    }
+}
+```
+
+3）通过文件后缀校验(GuardType.SUFFIX)
 
 ```java
 /**
@@ -89,7 +119,7 @@ public String suffix(HttpServletRequest request, MultipartFile file){
 }
 ```
 
-2)通过二进制文件头检验(GuardType.BYTES)
+4)通过二进制文件头检验(GuardType.BYTES)
 
 ```java
 /**

@@ -30,6 +30,18 @@ public @interface FileGuard {
      */
     FileType[] supportedFileTypes() default {};
 
+    /**
+     * 是否跳过校验
+     * @return
+     */
+    boolean skip() default false;
+
+    /**
+     * 是否启用自定义规则校验
+     * @return
+     */
+    boolean checkByRule() default false;
+
     enum GuardType {
         /**
          * 仅校验后缀
