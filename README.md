@@ -23,6 +23,8 @@ ShanHaiGuard 主要提供以下能力：
 
 - 支持单个方法文件上传自定义安全校验规则 @Ver1.0.1+支持
 
+- 支持基于Mybatis-Plus在进行数据字段级加密与脱敏（自己实现相关算法）@Ver1.0.2+支持
+
 - 支持SQL注入&XSS注入安全检测 @Ver1.0.0+支持
 
 - 支持Mybatis SQL查询安全审核（1.x仅支持mysql）@Ver1.0.0+支持
@@ -43,7 +45,7 @@ ShanHaiGuard 主要提供以下能力：
         <dependency>
             <groupId>com.wangshanhai.guard</groupId>
             <artifactId>shanhai-guard-spring-boot-starter</artifactId>
-            <version>1.0.1</version>
+            <version>${shanhaiguard.last.version}</version>
         </dependency>
 ```
 
@@ -176,7 +178,7 @@ shanhai:
       - '/*'
 ```
 
-## 3.4 mysql数据安全检测
+## 3.4 Mysql数据安全检测
 
 配置参数如下
 
@@ -289,9 +291,113 @@ shanhai:
 
 **注 ：如果既存在自定义解密类，又存在PBE解密配置的，自定义解密类优先级最高。**
 
-## 3.7 常见问题
+## 3.7 基于Mybatis-Plus进行字段级加解密与脱敏
 
-### 3.7.1 文件上传检测不生效
+```；yaml
+shanhai:
+  dataguard:
+    enable: true       #启用组件
+```
+
+在实体定义或者VO中添加类扫描注解@ShanHaiDataGuard,在需要操作的字段添加 @FieldDataGuard注解：
+
+```；java
+@TableName("dict_data")
+@ShanHaiDataGuard
+public class DictData implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @TableId(type = IdType.AUTO)
+
+    /**
+     * 字典标签
+     */
+    @FieldDataGuard(encrypt = true,encryptMethod = "aes",hyposensit = true,hyposensitMethod = "idcard",
+            decrypt = true,decryptMethod = "des")
+    private String dictLabel;
+}
+
+```
+
+@FieldDataGuard 各字段定义如下,建议自己实现公共方法集（首版没有提供默认方法集实现），对于存在特别处理的，可以使用ruleId作为单独的标识字段进行区分：
+
+```java
+    /**
+     * 规则ID，用于自行根据规则进行相关扩展
+     * @return
+     */
+    String ruleId() default "";
+    /**
+     * 是否启用数据加密(新增和更新均会调用)
+     * @return
+     */
+    boolean encrypt() default false;
+    /**
+     * 加密算法
+     * @return
+     */
+    String encryptMethod() default "";
+    /**
+     * 数据更新时不加密
+     * @return
+     */
+    boolean denyUpdateEncrypt() default false;
+    /**
+     * 是否启用数据查询解密
+     * @return
+     */
+    boolean decrypt() default false;
+
+    /**
+     * 解密算法
+     * @return
+     */
+    String decryptMethod() default "";
+    
+    /**
+     * 是否启用数据脱敏(新增和更新均会调用)
+     * @return
+     */
+    boolean hyposensit() default false;
+
+    /**
+     * 数据脱敏算法
+     * @return
+     */
+    String hyposensitMethod() default "idcard";
+    /**
+     * 数据更新时不脱敏
+     * @return
+     */
+    boolean denyUpdateHyposensit() default false;
+```
+
+自定义实现加解密与脱敏算法,需要实现ShanHaiDataGuardService
+
+```java
+public class ShanHaiDataGuardServiceImpl implements ShanHaiDataGuardService{
+    @Override
+    public String encrypt(ShanHaiTmpData shanHaiTmpData) {
+        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getEncryptMethod();
+    }
+
+    @Override
+    public String hyposensit(ShanHaiTmpData shanHaiTmpData) {
+        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getHyposensitMethod();
+    }
+
+    @Override
+    public String decrypt(ShanHaiTmpData shanHaiTmpData) {
+        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getDecryptMethod();
+    }
+}
+```
+
+ShanHaiTmpData可以获取到原始字段值以及处理这个值所需要的运行算法名称，此处自己可以根据自己的风格做相关算法实现。需要注意的是，如果是既要加密又要脱敏，则先执行脱敏再执行加密。如果既要解密又要脱敏，则先执行解密然后执行脱敏。
+
+## 3.8 常见问题
+
+### 3.8.1 文件上传检测不生效
 
 在springboot中使用多个继承WebMvcConfigurationSupport的类是行不通的，而且使用注解@configuration去加载配置类只能挂载一个继承WebMvcConfigurationSupport。
 
