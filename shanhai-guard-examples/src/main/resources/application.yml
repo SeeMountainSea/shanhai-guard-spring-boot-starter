@@ -11,6 +11,8 @@ shanhai:
     numberExist: true
     symbolExist: true
     keyboardNotExist: true
+  dataguard:
+    enable: true
   fileguard:
     enable: true
     pathPatterns:

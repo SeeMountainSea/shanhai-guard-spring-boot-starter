@@ -14,6 +14,7 @@ public class GuardImportSelector implements ImportSelector {
                 "com.wangshanhai.guard.component.PasswdGuardComponent",
                 "com.wangshanhai.guard.component.WebGuardComponent",
                 "com.wangshanhai.guard.component.MysqlGuardComponent",
+                "com.wangshanhai.guard.component.DataGuardComponent",
                 "com.wangshanhai.guard.component.DecodeBodyComponent"
         };
     }
