@@ -7,6 +7,7 @@ import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
 
 import java.util.Map;
 import java.util.Properties;
@@ -17,16 +18,30 @@ public class IEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Properties envProperties = new Properties();
         Properties configProperties = new Properties();
         for(PropertySource<?> propertySource:environment.getPropertySources()){
-            Object envTmp=propertySource.getSource();
-            if(envTmp instanceof Map){
-                Map<String,Object> env=(Map)envTmp;
-                for(String key:env.keySet()){
-                    String val=String.valueOf(env.get(key));
+            if (propertySource instanceof SimpleCommandLinePropertySource) {
+                SimpleCommandLinePropertySource source = (SimpleCommandLinePropertySource) propertySource;
+                String[] keys=source.getPropertyNames();
+                for(String key:keys){
+                    String val=source.getProperty(key);
                     if(key.contains("shanhai.envdecode")){
                         envProperties.setProperty(key,val);
                     }
                     if(val.contains("envdecode::")){
                         configProperties.setProperty(key,val.replace("envdecode::",""));
+                    }
+                }
+            }else{
+                Object envTmp=propertySource.getSource();
+                if(envTmp instanceof Map){
+                    Map<String,Object> env=(Map)envTmp;
+                    for(String key:env.keySet()){
+                        String val=String.valueOf(env.get(key));
+                        if(key.contains("shanhai.envdecode")){
+                            envProperties.setProperty(key,val);
+                        }
+                        if(val.contains("envdecode::")){
+                            configProperties.setProperty(key,val.replace("envdecode::",""));
+                        }
                     }
                 }
             }
