@@ -1,9 +1,9 @@
 package com.wangshanhai.guard.component;
 
 import com.wangshanhai.guard.decode.PropertyDecode;
+import com.wangshanhai.guard.utils.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -17,8 +17,9 @@ public class IEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Properties envProperties = new Properties();
         Properties configProperties = new Properties();
         for(PropertySource<?> propertySource:environment.getPropertySources()){
-            if(propertySource instanceof OriginTrackedMapPropertySource){
-                Map<String,Object> env=(Map)propertySource.getSource();
+            Object envTmp=propertySource.getSource();
+            if(envTmp instanceof Map){
+                Map<String,Object> env=(Map)envTmp;
                 for(String key:env.keySet()){
                     String val=String.valueOf(env.get(key));
                     if(key.contains("shanhai.envdecode")){
@@ -29,7 +30,6 @@ public class IEnvironmentPostProcessor implements EnvironmentPostProcessor {
                     }
                 }
             }
-
         }
         PropertiesPropertySource propertiesPropertySource = new PropertiesPropertySource("shanhai",decode(envProperties,configProperties));
         environment.getPropertySources().addFirst(propertiesPropertySource);
@@ -39,18 +39,19 @@ public class IEnvironmentPostProcessor implements EnvironmentPostProcessor {
         try{
             if(envProperties.containsKey("shanhai.envdecode.className")){
                 PropertyDecode propertyDecode=Class.forName(envProperties.getProperty("shanhai.envdecode.className")).asSubclass(PropertyDecode.class).newInstance();;
-                System.out.println("[shanhai-envdecode-init-success]-decode:"+envProperties.getProperty("shanhai.envdecode.className"));
+                Logger.info("[shanhai-envdecode-init-success]-decode:"+envProperties.getProperty("shanhai.envdecode.className"));
                 return propertyDecode.getProperty(envProperties,configProperties);
             }
             if(envProperties.containsKey("shanhai.envdecode.market.algorithm")){
                 String pkName="com.wangshanhai.guard.decode.market."+envProperties.getProperty("shanhai.envdecode.market.algorithm");
                 PropertyDecode propertyDecode=Class.forName(pkName).asSubclass(PropertyDecode.class).newInstance();;
-                System.out.println("[shanhai-envdecode-init-success]-decode:"+envProperties.getProperty("shanhai.envdecode.market.algorithm"));
+                Logger.info("[shanhai-envdecode-init-success]-decode:"+envProperties.getProperty("shanhai.envdecode.market.algorithm"));
                 return propertyDecode.getProperty(envProperties,configProperties);
             }
         }catch (Exception e){
-            System.out.println("[shanhai-envdecode-init-error]-msg:"+e.getMessage());
+            Logger.info("[shanhai-envdecode-init-error]-msg:"+e.getMessage());
         }
         return configProperties;
     }
+
 }

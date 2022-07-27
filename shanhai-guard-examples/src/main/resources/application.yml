@@ -12,7 +12,7 @@ shanhai:
     symbolExist: true
     keyboardNotExist: true
   dataguard:
-    enable: true
+    enable: false
   fileguard:
     enable: true
     pathPatterns:
@@ -30,13 +30,5 @@ shanhai:
     query-limit: 20000
   decodebody:
     enable: false
-  envdecode:
-    # 自定义解密类的优先级最高
-#    className: 'com.shanhai.guard.decode.market.RSAPropertyDecode'
-    market:
-      algorithm: PBE
-      pebSalt: 'VjBnT0Qo8hI='
-      pebPasswd: '20220111'
-
 app:
-  version: 'envdecode::iezthxHWDp/fhXYXZSjhVw=='
+  version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
