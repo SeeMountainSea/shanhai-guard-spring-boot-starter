@@ -1,9 +1,5 @@
 package com.wangshanhai.guard.annotation;
 
-import com.wangshanhai.guard.dataplug.DataEncryptDef;
-import com.wangshanhai.guard.dataplug.DataExecModel;
-import com.wangshanhai.guard.dataplug.DataHyposensitDef;
-
 import java.lang.annotation.*;
 
 /**
@@ -28,12 +24,12 @@ public @interface FieldDataGuard {
      * 加密算法
      * @return
      */
-    String encryptMethod() default DataEncryptDef.SM3;
+    String encryptMethod() default "SM3";
     /**
      * 执行加密算法的时机
      * @return
      */
-    int encryptExecModel() default DataExecModel.SAVEANDUPDATE;
+    int encryptExecModel() default 1;
     /**
      * 是否启用数据查询解密
      * @return
@@ -44,12 +40,12 @@ public @interface FieldDataGuard {
      * 解密算法
      * @return
      */
-    String decryptMethod() default DataEncryptDef.SM4;
+    String decryptMethod() default "SM4";
     /**
      * 执行解密算法的时机
      * @return
      */
-    int decryptExecModel() default DataExecModel.QUERY;
+    int decryptExecModel() default 3;
     /**
      * 是否启用数据脱敏(新增和更新均会调用)
      * @return
@@ -60,10 +56,10 @@ public @interface FieldDataGuard {
      * 数据脱敏算法
      * @return
      */
-    String hyposensitMethod() default DataHyposensitDef.RealName;
+    String hyposensitMethod() default "RealName";
     /**
      * 执行脱敏算法的时机
      * @return
      */
-    int hyposensitExecModel() default DataExecModel.QUERY;
+    int hyposensitExecModel() default 3;
 }
