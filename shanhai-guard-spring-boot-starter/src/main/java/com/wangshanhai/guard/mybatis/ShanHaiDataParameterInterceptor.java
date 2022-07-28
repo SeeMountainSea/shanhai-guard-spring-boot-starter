@@ -3,7 +3,10 @@ package com.wangshanhai.guard.mybatis;
 import com.baomidou.mybatisplus.core.MybatisParameterHandler;
 import com.wangshanhai.guard.annotation.FieldDataGuard;
 import com.wangshanhai.guard.annotation.ShanHaiDataGuard;
+import com.wangshanhai.guard.config.DataGuardConfig;
+import com.wangshanhai.guard.dataplug.DataExecModel;
 import com.wangshanhai.guard.service.ShanHaiDataGuardService;
+import com.wangshanhai.guard.utils.Logger;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -25,9 +28,11 @@ import java.util.Properties;
 public class ShanHaiDataParameterInterceptor implements Interceptor {
 
     private ShanHaiDataGuardService dataGuardService;
+    private DataGuardConfig shanhaiDataGuardConfig;
 
-    public ShanHaiDataParameterInterceptor(ShanHaiDataGuardService dataGuardService) {
+    public ShanHaiDataParameterInterceptor(ShanHaiDataGuardService dataGuardService,DataGuardConfig shanhaiDataGuardConfig) {
         this.dataGuardService = dataGuardService;
+        this.shanhaiDataGuardConfig=shanhaiDataGuardConfig;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                          //对类字段进行加密
                          //取出当前当前类所有字段，传入加密方法
                          Field[] declaredFields = pkObjClass.getDeclaredFields();
-                         encrypt(declaredFields, pkObj,2);
+                         encrypt(declaredFields, pkObj,DataExecModel.UPDATE,shanhaiDataGuardConfig);
                      }
                      ((Map)parameterObject).put(pk,pkObj);
                  }
@@ -63,7 +68,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                     //对类字段进行加密
                     //取出当前当前类所有字段，传入加密方法
                     Field[] declaredFields = parameterObjectClass.getDeclaredFields();
-                    encrypt(declaredFields, parameterObject,1);
+                    encrypt(declaredFields, parameterObject, DataExecModel.SAVE,shanhaiDataGuardConfig);
                 }
             }
 
@@ -80,7 +85,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
      * @return
      * @throws IllegalAccessException
      */
-    public <T> T encrypt(Field[] declaredFields, T paramsObject,int execModel) throws IllegalAccessException {
+    public <T> T encrypt(Field[] declaredFields, T paramsObject,int execModel,DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
         //取出所有被EncryptTransaction注解的字段
         for (Field field : declaredFields) {
             FieldDataGuard encryptTransaction = field.getAnnotation(FieldDataGuard.class);
@@ -96,20 +101,81 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                         ShanHaiTmpData shanHaiTmpData=new ShanHaiTmpData();
                         shanHaiTmpData.setExecModel(execModel);
                         shanHaiTmpData.setRuleId(encryptTransaction.ruleId());
+                        shanHaiTmpData.setTargetClass(paramsObject.getClass().getName());
+                        shanHaiTmpData.setTargetField(field.getName());
                         if(encryptTransaction.hyposensit()){
-                            if(!(encryptTransaction.denyUpdateHyposensit()&&execModel==2)){
+                            boolean canExec=false;
+                            if(execModel== DataExecModel.SAVE){
+                                if(encryptTransaction.hyposensitExecModel()==DataExecModel.SAVE
+                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDQUERY){
+                                    canExec=true;
+                                }
+                            }else{
+                                if(encryptTransaction.hyposensitExecModel()==DataExecModel.UPDATE
+                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.UPDATEANDQUERY){
+                                    canExec=true;
+                                }
+                            }
+                            if(canExec){
                                 shanHaiTmpData.setSourceValue(tmpText);
                                 shanHaiTmpData.setHyposensitMethod(encryptTransaction.hyposensitMethod());
                                 tmpText=dataGuardService.hyposensit(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
+                                if(shanhaiDataGuardConfig.isTraceLog()){
+                                    Logger.info("[shanhaiDataGuard-Update-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                }
                             }
                         }
                         if(encryptTransaction.encrypt()){
-                            if(!(encryptTransaction.denyUpdateEncrypt()&&execModel==2)){
+                            boolean canExec=false;
+                            if(execModel== DataExecModel.SAVE){
+                                if(encryptTransaction.encryptExecModel()==DataExecModel.SAVE
+                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDQUERY){
+                                    canExec=true;
+                                }
+                            }else{
+                                if(encryptTransaction.encryptExecModel()==DataExecModel.UPDATE
+                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.encryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                                    canExec=true;
+                                }
+                            }
+                            if(canExec){
                                 shanHaiTmpData.setSourceValue(tmpText);
                                 shanHaiTmpData.setEncryptMethod(encryptTransaction.encryptMethod());
                                 tmpText=dataGuardService.encrypt(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
+                                if(shanhaiDataGuardConfig.isTraceLog()){
+                                    Logger.info("[shanhaiDataGuard-Update-Encrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                }
+                            }
+                        }
+                        if(encryptTransaction.decrypt()){
+                            boolean canExec=false;
+                            if(execModel== DataExecModel.SAVE){
+                                if(encryptTransaction.decryptExecModel()==DataExecModel.SAVE
+                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDQUERY){
+                                    canExec=true;
+                                }
+                            }else{
+                                if(encryptTransaction.decryptExecModel()==DataExecModel.UPDATE
+                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDUPDATE
+                                        ||encryptTransaction.decryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                                    canExec=true;
+                                }
+                            }
+                            if(canExec){
+                                shanHaiTmpData.setSourceValue(tmpText);
+                                shanHaiTmpData.setDecryptMethod(encryptTransaction.decryptMethod());
+                                tmpText=dataGuardService.decrypt(shanHaiTmpData);
+                                field.set(paramsObject,tmpText);
+                                if(shanhaiDataGuardConfig.isTraceLog()){
+                                    Logger.info("[shanhaiDataGuard-Update-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                }
                             }
                         }
                     } catch (Exception e) {

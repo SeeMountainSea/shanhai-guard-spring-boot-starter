@@ -1,9 +1,14 @@
 package com.wangshanhai.guard.annotation;
 
+import com.wangshanhai.guard.dataplug.DataEncryptDef;
+import com.wangshanhai.guard.dataplug.DataExecModel;
+import com.wangshanhai.guard.dataplug.DataHyposensitDef;
+
 import java.lang.annotation.*;
 
 /**
  * 数据防护
+ * @author Shmily
  */
 @Inherited
 @Target({ElementType.FIELD, ElementType.PARAMETER})
@@ -23,12 +28,12 @@ public @interface FieldDataGuard {
      * 加密算法
      * @return
      */
-    String encryptMethod() default "";
+    String encryptMethod() default DataEncryptDef.SM3;
     /**
-     * 数据更新时不加密
+     * 执行加密算法的时机
      * @return
      */
-    boolean denyUpdateEncrypt() default false;
+    int encryptExecModel() default DataExecModel.SAVEANDUPDATE;
     /**
      * 是否启用数据查询解密
      * @return
@@ -39,7 +44,12 @@ public @interface FieldDataGuard {
      * 解密算法
      * @return
      */
-    String decryptMethod() default "";
+    String decryptMethod() default DataEncryptDef.SM4;
+    /**
+     * 执行解密算法的时机
+     * @return
+     */
+    int decryptExecModel() default DataExecModel.QUERY;
     /**
      * 是否启用数据脱敏(新增和更新均会调用)
      * @return
@@ -50,10 +60,10 @@ public @interface FieldDataGuard {
      * 数据脱敏算法
      * @return
      */
-    String hyposensitMethod() default "idcard";
+    String hyposensitMethod() default DataHyposensitDef.RealName;
     /**
-     * 数据更新时不脱敏
+     * 执行脱敏算法的时机
      * @return
      */
-    boolean denyUpdateHyposensit() default false;
+    int hyposensitExecModel() default DataExecModel.QUERY;
 }

@@ -2,7 +2,10 @@ package com.wangshanhai.guard.mybatis;
 
 import com.wangshanhai.guard.annotation.FieldDataGuard;
 import com.wangshanhai.guard.annotation.ShanHaiDataGuard;
+import com.wangshanhai.guard.config.DataGuardConfig;
+import com.wangshanhai.guard.dataplug.DataExecModel;
 import com.wangshanhai.guard.service.ShanHaiDataGuardService;
+import com.wangshanhai.guard.utils.Logger;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -23,8 +26,11 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
 
     private ShanHaiDataGuardService dataGuardService;
 
-    public ShanHaiDataResultsInterceptor(ShanHaiDataGuardService dataGuardService) {
+    private DataGuardConfig shanhaiDataGuardConfig;
+
+    public ShanHaiDataResultsInterceptor(ShanHaiDataGuardService dataGuardService,DataGuardConfig shanhaiDataGuardConfig) {
         this.dataGuardService = dataGuardService;
+        this.shanhaiDataGuardConfig=shanhaiDataGuardConfig;
     }
 
     @Override
@@ -41,13 +47,13 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
             if (!CollectionUtils.isEmpty(resultList) && needToDecrypt(resultList.get(0))) {
                 for (Object result : resultList) {
                     //逐一解密
-                    decrypt(result);
+                    decrypt(result,shanhaiDataGuardConfig);
                 }
             }
             //基于selectOne
         } else {
             if (needToDecrypt(resultObject)) {
-                decrypt(resultObject);
+                decrypt(resultObject,shanhaiDataGuardConfig);
             }
         }
         return resultObject;
@@ -60,7 +66,7 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
      * @return
      * @throws IllegalAccessException
      */
-    public <T> T decrypt(T result) throws IllegalAccessException {
+    public <T> T decrypt(T result, DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
         //取出resultType的类
         Class<?> resultClass = result.getClass();
         Field[] declaredFields = resultClass.getDeclaredFields();
@@ -76,19 +82,43 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                     try {
                         String tmpText=(String) object;
                         ShanHaiTmpData shanHaiTmpData=new ShanHaiTmpData();
-                        shanHaiTmpData.setExecModel(3);
+                        shanHaiTmpData.setExecModel(DataExecModel.QUERY);
                         shanHaiTmpData.setRuleId(fieldDataGuard.ruleId());
+                        shanHaiTmpData.setTargetField(field.getName());
+                        shanHaiTmpData.setTargetClass(result.getClass().getName());
                         if(fieldDataGuard.decrypt()){
-                            shanHaiTmpData.setSourceValue(tmpText);
-                            shanHaiTmpData.setDecryptMethod(fieldDataGuard.decryptMethod());
-                            tmpText=dataGuardService.decrypt(shanHaiTmpData);
-                            field.set(result,tmpText);
+                            boolean canExec=false;
+                            if(fieldDataGuard.decryptExecModel()==DataExecModel.QUERY
+                                    ||fieldDataGuard.decryptExecModel()==DataExecModel.SAVEANDQUERY
+                                    ||fieldDataGuard.decryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                                canExec=true;
+                            }
+                            if(canExec){
+                                shanHaiTmpData.setSourceValue(tmpText);
+                                shanHaiTmpData.setDecryptMethod(fieldDataGuard.decryptMethod());
+                                tmpText=dataGuardService.decrypt(shanHaiTmpData);
+                                field.set(result,tmpText);
+                                if(shanhaiDataGuardConfig.isTraceLog()){
+                                    Logger.info("[shanhaiDataGuard-Query-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                }
+                            }
                         }
                         if(fieldDataGuard.hyposensit()){
-                            shanHaiTmpData.setSourceValue(tmpText);
-                            shanHaiTmpData.setHyposensitMethod(fieldDataGuard.hyposensitMethod());
-                            tmpText=dataGuardService.hyposensit(shanHaiTmpData);
-                            field.set(result,tmpText);
+                            boolean canExec=false;
+                            if(fieldDataGuard.hyposensitExecModel()==DataExecModel.QUERY
+                                    ||fieldDataGuard.hyposensitExecModel()==DataExecModel.SAVEANDQUERY
+                                    ||fieldDataGuard.hyposensitExecModel()==DataExecModel.UPDATEANDQUERY){
+                                canExec=true;
+                            }
+                            if(canExec){
+                                shanHaiTmpData.setSourceValue(tmpText);
+                                shanHaiTmpData.setHyposensitMethod(fieldDataGuard.hyposensitMethod());
+                                tmpText=dataGuardService.hyposensit(shanHaiTmpData);
+                                field.set(result,tmpText);
+                                if(shanhaiDataGuardConfig.isTraceLog()){
+                                    Logger.info("[shanhaiDataGuard-Query-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                }
+                            }
                         }
 
                     } catch (Exception e) {

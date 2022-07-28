@@ -40,4 +40,12 @@ public class ShanHaiTmpData implements Serializable {
      * 规则ID，用于自行根据规则进行相关扩展
      */
     private String ruleId;
+    /**
+     * 目标字段
+     */
+    private String targetField;
+    /**
+     * 目标类
+     */
+    private String targetClass;
 }
