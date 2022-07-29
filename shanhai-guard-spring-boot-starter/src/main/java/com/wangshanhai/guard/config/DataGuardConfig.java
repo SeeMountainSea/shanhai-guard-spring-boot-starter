@@ -3,11 +3,9 @@ package com.wangshanhai.guard.config;
 import com.wangshanhai.guard.dataplug.EncryptRule;
 import com.wangshanhai.guard.dataplug.HyposensitRule;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @ConfigurationProperties(prefix = "shanhai.dataguard")
 public class DataGuardConfig {
     /**
