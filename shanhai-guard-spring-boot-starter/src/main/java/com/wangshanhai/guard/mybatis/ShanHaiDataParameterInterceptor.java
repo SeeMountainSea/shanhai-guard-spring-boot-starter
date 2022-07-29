@@ -85,7 +85,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
      * @return
      * @throws IllegalAccessException
      */
-    public <T> T encrypt(Field[] declaredFields, T paramsObject,int execModel,DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
+    public <T> T encrypt(Field[] declaredFields, T paramsObject,String execModel,DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
         //取出所有被EncryptTransaction注解的字段
         for (Field field : declaredFields) {
             FieldDataGuard encryptTransaction = field.getAnnotation(FieldDataGuard.class);
@@ -105,16 +105,16 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                         shanHaiTmpData.setTargetField(field.getName());
                         if(encryptTransaction.hyposensit()){
                             boolean canExec=false;
-                            if(execModel== DataExecModel.SAVE){
-                                if(encryptTransaction.hyposensitExecModel()==DataExecModel.SAVE
-                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDQUERY){
+                            if(execModel.equals(DataExecModel.SAVE)){
+                                if(encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVE)
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDQUERY)){
                                     canExec=true;
                                 }
                             }else{
-                                if(encryptTransaction.hyposensitExecModel()==DataExecModel.UPDATE
-                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.hyposensitExecModel()==DataExecModel.UPDATEANDQUERY){
+                                if(encryptTransaction.hyposensitExecModel().equals(DataExecModel.UPDATE)
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.UPDATEANDQUERY)){
                                     canExec=true;
                                 }
                             }
@@ -124,22 +124,22 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                                 tmpText=dataGuardService.hyposensit(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[shanhaiDataGuard-Update-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-Update-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }
                         if(encryptTransaction.encrypt()){
                             boolean canExec=false;
-                            if(execModel== DataExecModel.SAVE){
-                                if(encryptTransaction.encryptExecModel()==DataExecModel.SAVE
-                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDQUERY){
+                            if(execModel.equals( DataExecModel.SAVE)){
+                                if(encryptTransaction.encryptExecModel().equals(DataExecModel.SAVE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDQUERY)){
                                     canExec=true;
                                 }
                             }else{
-                                if(encryptTransaction.encryptExecModel()==DataExecModel.UPDATE
-                                        ||encryptTransaction.encryptExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.encryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                                if(encryptTransaction.encryptExecModel().equals(DataExecModel.UPDATE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
                                     canExec=true;
                                 }
                             }
@@ -149,22 +149,22 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                                 tmpText=dataGuardService.encrypt(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[shanhaiDataGuard-Update-Encrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-Update-Encrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }
                         if(encryptTransaction.decrypt()){
                             boolean canExec=false;
-                            if(execModel== DataExecModel.SAVE){
-                                if(encryptTransaction.decryptExecModel()==DataExecModel.SAVE
-                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDQUERY){
+                            if(execModel.equals( DataExecModel.SAVE)){
+                                if(encryptTransaction.decryptExecModel().equals(DataExecModel.SAVE)
+                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDQUERY)){
                                     canExec=true;
                                 }
                             }else{
-                                if(encryptTransaction.decryptExecModel()==DataExecModel.UPDATE
-                                        ||encryptTransaction.decryptExecModel()==DataExecModel.SAVEANDUPDATE
-                                        ||encryptTransaction.decryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                                if(encryptTransaction.decryptExecModel().equals(DataExecModel.UPDATE)
+                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
+                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
                                     canExec=true;
                                 }
                             }
@@ -174,7 +174,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                                 tmpText=dataGuardService.decrypt(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[shanhaiDataGuard-Update-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-Update-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }

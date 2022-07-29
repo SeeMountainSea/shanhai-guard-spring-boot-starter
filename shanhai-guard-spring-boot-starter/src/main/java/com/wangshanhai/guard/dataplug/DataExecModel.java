@@ -7,25 +7,25 @@ public class DataExecModel {
     /**
      * 新增
      */
-    public static final Integer SAVE =1;
+    public static final String SAVE ="SAVE";
     /**
      * 更新
      */
-    public static final Integer UPDATE =2;
+    public static final String UPDATE ="UPDATE";
     /**
      * 查询
      */
-    public static final Integer QUERY =3;
+    public static final String QUERY ="QUERY";
     /**
      * 新增&更新
      */
-    public static final Integer SAVEANDUPDATE =4;
+    public static final String SAVEANDUPDATE ="SAVEANDUPDATE";
     /**
      * 新增&查询
      */
-    public static final Integer SAVEANDQUERY =5;
+    public static final String SAVEANDQUERY ="SAVEANDQUERY";
     /**
      * 更新&查询
      */
-    public static final Integer UPDATEANDQUERY =6;
+    public static final String UPDATEANDQUERY ="UPDATEANDQUERY";
 }

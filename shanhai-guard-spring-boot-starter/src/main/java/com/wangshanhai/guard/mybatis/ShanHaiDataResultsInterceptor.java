@@ -88,9 +88,9 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                         shanHaiTmpData.setTargetClass(result.getClass().getName());
                         if(fieldDataGuard.decrypt()){
                             boolean canExec=false;
-                            if(fieldDataGuard.decryptExecModel()==DataExecModel.QUERY
-                                    ||fieldDataGuard.decryptExecModel()==DataExecModel.SAVEANDQUERY
-                                    ||fieldDataGuard.decryptExecModel()==DataExecModel.UPDATEANDQUERY){
+                            if(fieldDataGuard.decryptExecModel().equals(DataExecModel.QUERY)
+                                    ||fieldDataGuard.decryptExecModel().equals(DataExecModel.SAVEANDQUERY)
+                                    ||fieldDataGuard.decryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
                                 canExec=true;
                             }
                             if(canExec){
@@ -99,15 +99,15 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                                 tmpText=dataGuardService.decrypt(shanHaiTmpData);
                                 field.set(result,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[shanhaiDataGuard-Query-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-Query-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }
                         if(fieldDataGuard.hyposensit()){
                             boolean canExec=false;
-                            if(fieldDataGuard.hyposensitExecModel()==DataExecModel.QUERY
-                                    ||fieldDataGuard.hyposensitExecModel()==DataExecModel.SAVEANDQUERY
-                                    ||fieldDataGuard.hyposensitExecModel()==DataExecModel.UPDATEANDQUERY){
+                            if(fieldDataGuard.hyposensitExecModel().equals(DataExecModel.QUERY)
+                                    ||fieldDataGuard.hyposensitExecModel().equals(DataExecModel.SAVEANDQUERY)
+                                    ||fieldDataGuard.hyposensitExecModel().equals(DataExecModel.UPDATEANDQUERY)){
                                 canExec=true;
                             }
                             if(canExec){
@@ -116,7 +116,7 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                                 tmpText=dataGuardService.hyposensit(shanHaiTmpData);
                                 field.set(result,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[shanhaiDataGuard-Query-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-Query-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }

@@ -33,9 +33,9 @@ public class ShanHaiTmpData implements Serializable {
      */
     private String hyposensitMethod;
     /**
-     * 执行模式  执行模式  1：新增 2：更新 3:查询
+     * 执行模式
      */
-    private int execModel;
+    private String execModel;
     /**
      * 规则ID，用于自行根据规则进行相关扩展
      */
