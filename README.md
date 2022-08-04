@@ -307,11 +307,11 @@ shanhai:
       - {ruleId: 'AES', ruleParams: {key: wjy59188wjy59188}} #内置AES加密算法示例(key的长度为16位) 
       - {ruleId: 'SM4', ruleParams: {key: wjy59188wjy59188}} #内置SM4加密算法示例(key的长度为16位) 
       - {ruleId: 'HMACSHA256', ruleParams: {key: wjy59188wjy59188}} #内置HMACSHA256加密算法示例
-      - {ruleId: 'RSA', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置HMACSHA256加密算法示例
-      - {ruleId: 'SM2', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置HMACSHA256加密算法示例 
+      - {ruleId: 'RSA', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置RSA加密算法示例
+      - {ruleId: 'SM2', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置SM2加密算法示例 
 ```
 
-注：此处的ruleId的值是示例，实际使用时自己可以改为其他标识字符串即可，ruleParams中的参数，使用内置算法时，参数名必须为示例配置中的参数名才可以，相关key的值可以自己自定义。
+注：此处的ruleId的值是示例，实际使用时需要修改为FieldDataGuard中定义的ruleId对应的值，ruleId必须自行确保全局唯一，否则数据解析会有问题。ruleParams中的参数，使用内置算法时，参数名必须为示例配置中的参数名才可以，相关key的值可以自己自定义。
 
 如果需要使用国密算法，需要引入额外的依赖才可以
 
