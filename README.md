@@ -23,7 +23,7 @@ ShanHaiGuard 主要提供以下能力：
 
 - 支持单个方法文件上传自定义安全校验规则 @Ver1.0.1+支持
 
-- 支持基于Mybatis-Plus在进行数据字段级加密与脱敏（自己实现相关算法）@Ver1.0.3+支持
+- 支持基于Mybatis-Plus在进行数据字段级加密与脱敏（支持自行扩展实现相关算法）@Ver1.0.7+支持
 
 - 支持SQL注入&XSS注入安全检测 @Ver1.0.0+支持
 
@@ -33,7 +33,7 @@ ShanHaiGuard 主要提供以下能力：
 
 - 支持拓展SpringBoot POST数据定制化解析，从而实现全局自动数据解析能力(例如数据解码,动态修改数据) @Ver1.0.0+支持
 
-- 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.0+支持
+- 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.7+支持
 
   注：由于ShanHaiGuard是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
   
@@ -222,7 +222,9 @@ public interface DecodeBodyService {
 
 **由于配置文件参数解析在Spring初始化的时候完成，因此默认启用，无法关闭。**
 
-使用PBE解密算法样例配置参数如下：
+**现已经对数据解析进行了修复，支持使用命令行参数进行PEB密钥配置。**
+
+使用PBE解密算法样例
 
 ```yaml
 shanhai:
@@ -291,57 +293,120 @@ shanhai:
 
 **注 ：如果既存在自定义解密类，又存在PBE解密配置的，自定义解密类优先级最高。**
 
-## 3.7 基于Mybatis-Plus进行字段级加解密与脱敏
+## 3.7 基于Mybatis-Plus进行字段级加解密与数据脱敏
 
-```；yaml
+### 3.7.1 使用内置算法进行数据字段级加解密操作
+
+配置参数如下：
+
+```yaml
 shanhai:
   dataguard:
     enable: true       #启用组件
+    encryptRulesExt:  #加密算法参数配置(对称加密&非对称加密均需配置)
+      - {ruleId: 'AES', ruleParams: {key: wjy59188wjy59188}} #内置AES加密算法示例(key的长度为16位) 
+      - {ruleId: 'SM4', ruleParams: {key: wjy59188wjy59188}} #内置SM4加密算法示例(key的长度为16位) 
+      - {ruleId: 'HMACSHA256', ruleParams: {key: wjy59188wjy59188}} #内置HMACSHA256加密算法示例
+      - {ruleId: 'RSA', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置HMACSHA256加密算法示例
+      - {ruleId: 'SM2', ruleParams: {publicKey: wjy59188wjy59188,privateKey: wjy59188wjy59188}} #内置HMACSHA256加密算法示例 
 ```
 
-在实体定义或者VO中添加类扫描注解@ShanHaiDataGuard,在需要操作的字段添加 @FieldDataGuard注解：
+注：此处的ruleId的值是示例，实际使用时自己可以改为其他标识字符串即可，ruleParams中的参数，使用内置算法时，参数名必须为示例配置中的参数名才可以，相关key的值可以自己自定义。
 
-```；java
-@TableName("dict_data")
+如果需要使用国密算法，需要引入额外的依赖才可以
+
+```
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>${bcprov.version}</version>
+        </dependency>
+```
+
+新建自己的数据解析实现并继承DefaultDataGuardServiceImpl，可以实现使用默认算法或者自己扩展其他加解密算法。
+
+```java
+@Service
+public class XXXDataGuardServiceImpl extends DefaultDataGuardServiceImpl {
+    @Autowired
+    private DataGuardConfig shanhaiDataGuardConfig;
+
+    public XXXDataGuardServiceImpl(DataGuardConfig shanhaiDataGuardConfig) {
+        super(shanhaiDataGuardConfig);
+    }
+
+    @Override
+    public String encrypt(ShanHaiTmpData shanHaiTmpData) {
+        //TODO 可以在此处扩展自定义加密算法实现
+        return super.encrypt(shanHaiTmpData);
+    }
+
+    @Override
+    public String decrypt(ShanHaiTmpData shanHaiTmpData) {
+        //TODO 可以在此处扩展自定义解密算法实现
+        return super.decrypt(shanHaiTmpData);
+    }
+
+    @Override
+    public String hyposensit(ShanHaiTmpData shanHaiTmpData) {
+        //TODO 可以在此处扩展自定义脱敏算法实现
+        return super.hyposensit(shanHaiTmpData);
+    }
+}
+
+```
+
+在Domain中添加类扫描注解@ShanHaiDataGuard,在需要操作的字段添加 @FieldDataGuard注解：
+
+加密示例如下：
+
+```java
 @ShanHaiDataGuard
 public class DictData implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @TableId(type = IdType.AUTO)
-
-    /**
-     * 字典标签
-     */
-    @FieldDataGuard(encrypt = true,encryptMethod = "aes",hyposensit = true,hyposensitMethod = "idcard",
-            decrypt = true,decryptMethod = "des")
+    
+    @FieldDataGuard(ruleId = "dictLabel",encrypt = true,encryptMethod = DataEncryptDef.SHA256,encryptExecModel = DataExecModel.SAVE)
     private String dictLabel;
 }
 
 ```
 
-@FieldDataGuard 各字段定义如下,建议自己实现公共方法集（首版没有提供默认方法集实现），对于存在特别处理的，可以使用ruleId作为单独的标识字段进行区分：
+解密示例如下：
 
 ```java
-    /**
+@ShanHaiDataGuard
+public class DictData implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    @FieldDataGuard(ruleId = "dictLabel",decrypt  = true,decryptMethod = DataEncryptDef.AES,decryptExecModel = DataExecModel.QUERY)
+    private String dictLabel;
+}
+
+```
+
+@FieldDataGuard 各字段定义如下：
+
+```java
+     /**
      * 规则ID，用于自行根据规则进行相关扩展
      * @return
      */
     String ruleId() default "";
     /**
-     * 是否启用数据加密(新增和更新均会调用)
+     * 是否启用数据加密
      * @return
      */
     boolean encrypt() default false;
     /**
-     * 加密算法
+     * 加密算法 默认算法集参考DataEncryptDef
      * @return
      */
     String encryptMethod() default "";
     /**
-     * 数据更新时不加密
+     * 执行加密算法的时机 参考DataExecModel
      * @return
      */
-    boolean denyUpdateEncrypt() default false;
+    String encryptExecModel() default "";
     /**
      * 是否启用数据查询解密
      * @return
@@ -349,51 +414,116 @@ public class DictData implements Serializable {
     boolean decrypt() default false;
 
     /**
-     * 解密算法
+     * 解密算法 默认算法集参考DataEncryptDef
      * @return
      */
     String decryptMethod() default "";
-    
     /**
-     * 是否启用数据脱敏(新增和更新均会调用)
+     * 执行解密算法的时机 参考DataExecModel
+     * @return
+     */
+    String decryptExecModel() default "";
+    /**
+     * 是否启用数据脱敏
      * @return
      */
     boolean hyposensit() default false;
 
     /**
-     * 数据脱敏算法
+     * 数据脱敏算法 默认算法集参考DataHyposensitDef
      * @return
      */
-    String hyposensitMethod() default "idcard";
+    String hyposensitMethod() default "";
     /**
-     * 数据更新时不脱敏
+     * 执行脱敏算法的时机 参考DataExecModel
      * @return
      */
-    boolean denyUpdateHyposensit() default false;
+    String hyposensitExecModel() default "";
+}
 ```
 
-自定义实现加解密与脱敏算法,需要实现ShanHaiDataGuardService
+ShanHaiTmpData可以获取到原始字段值以及处理这个值所需要的运行算法名称。需要注意的是，如果是既要加密又要脱敏，则先执行脱敏再执行加密。如果既要解密又要脱敏，则先执行解密然后执行脱敏。
+
+加解密默认算法（DataEncryptDef）：
+
+**MD5/SHA256/HMACSHA256/RSA/AES/SM2/SM3/SM4**
+
+### 3.7.2 数据字段级脱敏操作
+
+配置参数如下：
+
+```yaml
+shanhai:
+  dataguard:
+    enable: true       #启用组件
+    trace-log: true    #启用跟踪日志
+    hyposensitRulesExt: #脱敏规则定义（需要自行扩展时才需要配置，默认不需要配置该扩展）
+      - {ruleId: 'yourRule',regex: '([1][1-9]\d{1})\d{4}(\d{4})',replacement: '$1****$2'}
+```
+
+注：此处的ruleId的值是示例，实际使用时自己可以改为其他标识字符串即可，regex为自定义正则，replacement为脱敏后的格式。使用的String.replaceAll做脱敏处理。
+
+脱敏默认算法（DataHyposensitDef）：
+
+**IDcard/RealName/TelPhone/email/money** 分别对应的是：身份证/姓名/手机号/邮箱/金额
+
+数据脱敏示例如下：
 
 ```java
-public class ShanHaiDataGuardServiceImpl implements ShanHaiDataGuardService{
-    @Override
-    public String encrypt(ShanHaiTmpData shanHaiTmpData) {
-        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getEncryptMethod();
+@ShanHaiDataGuard
+public class DictData implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
+    @FieldDataGuard(ruleId = "dictLabel",hyposensit = true,hyposensitMethod = DataHyposensitDef.IDcard,hyposensitExecModel = DataExecModel.QUERY)
+    private String dictLabel;
+}
+```
+
+### 3.7.3 使用自定义算法进行数据字段级加解密操作
+
+配置参数如下：
+
+```yaml
+shanhai:
+  dataguard:
+    enable: true       #启用组件
+    encryptRulesExt:  #加密算法参数配置(自定义算法实现)
+      - {ruleId: 'xxxxx', ruleParams: {key: wjy59188wjy59188, iv: aaaaa1111, source: device}} 
+```
+
+此处ruleParams中的参数你可以按照自己需要进行自定义，此处只是一个示例。
+
+在自己的数据解析实现扩展加解密算法或者数据脱敏操作。
+
+```java
+@Service
+public class XXXDataGuardServiceImpl extends DefaultDataGuardServiceImpl {
+    @Autowired
+    private DataGuardConfig shanhaiDataGuardConfig;
+
+    public XXXDataGuardServiceImpl(DataGuardConfig shanhaiDataGuardConfig) {
+        super(shanhaiDataGuardConfig);
     }
 
     @Override
-    public String hyposensit(ShanHaiTmpData shanHaiTmpData) {
-        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getHyposensitMethod();
+    public String encrypt(ShanHaiTmpData shanHaiTmpData) {
+        //TODO 可以在此处扩展自定义加密算法实现
+        return super.encrypt(shanHaiTmpData);
     }
 
     @Override
     public String decrypt(ShanHaiTmpData shanHaiTmpData) {
-        return shanHaiTmpData.getSourceValue()+"@"+shanHaiTmpData.getDecryptMethod();
+        //TODO 可以在此处扩展自定义解密算法实现
+        return super.decrypt(shanHaiTmpData);
     }
 }
+
 ```
 
-ShanHaiTmpData可以获取到原始字段值以及处理这个值所需要的运行算法名称，此处自己可以根据自己的风格做相关算法实现。需要注意的是，如果是既要加密又要脱敏，则先执行脱敏再执行加密。如果既要解密又要脱敏，则先执行解密然后执行脱敏。
+自己定义的加解密算法的配置参数可以从DataGuardConfig->encryptRulesExt->EncryptRule中获取，ruleParams在EncryptRule中以Map的形式存在。对于Domain对象中的ruleId以及原始字段数据可以从ShanHaiTmpData中获取。
+
+对于脱敏，暂不支持配置自定义脱敏算法。需要实现的可以自己重写hyposensit的实现。
 
 ## 3.8 常见问题
 
