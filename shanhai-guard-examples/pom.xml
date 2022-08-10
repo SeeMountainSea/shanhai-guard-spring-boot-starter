@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.wangshanhai.guard</groupId>
             <artifactId>shanhai-guard-spring-boot-starter</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.8</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.baomidou</groupId>-->

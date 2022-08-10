@@ -30,5 +30,8 @@ shanhai:
     query-limit: 20000
   decodebody:
     enable: false
+  respguard:
+    enable: true
+    trace-log: true
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
