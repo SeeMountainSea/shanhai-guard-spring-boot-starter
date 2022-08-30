@@ -222,7 +222,7 @@ public interface DecodeBodyService {
 
 **由于配置文件参数解析在Spring初始化的时候完成，因此默认启用，无法关闭。**
 
-**现已经对数据解析进行了修复，支持使用命令行参数进行PEB密钥配置。**
+**现已经对数据解析进行了修复，支持使用命令行参数进行PBE密钥配置。**
 
 使用PBE解密算法样例
 
@@ -525,9 +525,42 @@ public class XXXDataGuardServiceImpl extends DefaultDataGuardServiceImpl {
 
 对于脱敏，暂不支持配置自定义脱敏算法。需要实现的可以自己重写hyposensit的实现。
 
-## 3.8 常见问题
+## 3.8基于序列化的响应报文数据脱敏
 
-### 3.8.1 文件上传检测不生效
+配置参数如下：
+
+```
+shanhai:
+  respguard:
+    enable: true       #启用组件
+```
+
+在响应报文VO对象中需要进行脱敏的字段，添加注解 @RespFieldGuard并增加规则定义：
+
+```java
+public class RespInfo {
+    @RespFieldGuard(ruleId = "text")
+    private String text;
+}
+```
+
+实现RespGuardRuleDefService接口，实现自己的脱敏算法集合：
+
+```java
+@Service
+public class OpenRespGuardRuleDefService implements RespGuardRuleDefService {
+    @Override
+    public Object jsonGenerator(String ruleId, Object fieldValue) {
+        return String.valueOf(fieldValue)+"@"+ruleId;
+    }
+}
+```
+
+注：此处只是做了通用性封装，没有内置任何脱敏算法，相关规则需要自己来实现。
+
+## 3.9 常见问题
+
+### 3.9.1 文件上传检测不生效
 
 在springboot中使用多个继承WebMvcConfigurationSupport的类是行不通的，而且使用注解@configuration去加载配置类只能挂载一个继承WebMvcConfigurationSupport。
 
