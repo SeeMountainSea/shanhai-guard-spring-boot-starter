@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class DefaultFileGuardRuleDefServiceImpl implements FileGuardRuleDefService {
     @Override
-    public boolean isSafe(Map<String, MultipartFile> files) {
+    public boolean isSafe(String ruleId, Map<String, MultipartFile> files) {
         throw new HttpBizException("请先实现自定义校验规则校验器后再启用该组件!");
     }
 }

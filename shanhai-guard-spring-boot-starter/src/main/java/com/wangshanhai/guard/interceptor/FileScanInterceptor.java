@@ -6,6 +6,7 @@ import com.wangshanhai.guard.config.FileGuardConfig;
 import com.wangshanhai.guard.service.FileGuardRuleDefService;
 import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
+import com.wangshanhai.guard.utils.ZipUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -64,12 +65,32 @@ public class FileScanInterceptor extends HandlerInterceptorAdapter {
                            return true;
                        }
                        if(fileGuard.checkByRule()){
-                            return fileGuardRuleDefService.isSafe(files);
+                            return fileGuardRuleDefService.isSafe(fileGuard.ruleId(),files);
                        }
                     }
                     if(checkFile(filename)){
                         if(fileGuard!=null){
-                            return checkGuard(multipartFile,fileGuard);
+                            boolean fileResp= checkGuard(multipartFile,fileGuard);
+                            if(!fileResp){
+                                Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
+                                throw new HttpBizException(fileGuard.message());
+                            }
+                        }
+                        if(fileGuardConfig.getZipScan()){
+                            String suffix = filename.substring(filename.lastIndexOf(".") + 1);
+                            if("zip".equals(suffix.trim().toLowerCase())){
+                                boolean zipSafe=true;
+                                try{
+                                    zipSafe= ZipUtils.checkZipFiles(ZipUtils.readZipFile(multipartFile.getInputStream()),fileGuardConfig.getZipSafeSuffixs());
+                                }catch (Exception e){
+                                    zipSafe=false;
+                                    e.printStackTrace();
+                                }
+                                if(!zipSafe){
+                                    Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
+                                    throw new HttpBizException("ZIP压缩包内包含不允许上传的文件类型！");
+                                }
+                            }
                         }
                     }else{
                         Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
@@ -102,45 +123,41 @@ public class FileScanInterceptor extends HandlerInterceptorAdapter {
             fileTypeSet.add(FileType.getBySuffix(suffix));
          }
         if (type ==  FileGuard.GuardType.SUFFIX) {
-            return suffixCheck(file, suffixSet, fileGuard.message());
-        } else {
-           return  bytesCheck(file, fileTypeSet, fileGuard.message());
+            return suffixCheck(file, suffixSet);
         }
+        return  bytesCheck(file, fileTypeSet);
+
     }
 
     /**
      * 通过文件头方式校验
      * @param file 文件
      * @param fileTypeSet 文件头白名单
-     * @param message 异常提示
      * @return
      */
-    private boolean bytesCheck(MultipartFile file, Set<FileType> fileTypeSet, String message) {
+    private boolean bytesCheck(MultipartFile file, Set<FileType> fileTypeSet) {
         String hexNumber = readFileHeader(file);
         for (FileType fileType : fileTypeSet) {
             if (!StringUtils.isEmpty(hexNumber)&&hexNumber.startsWith(fileType.getHexNumber())) {
                 return true;
             }
         }
-        throw new HttpBizException(message);
+        return false;
     }
 
     /**
      * 通过文件后缀校验
      * @param file 文件
      * @param suffixSet 文件后缀白名单
-     * @param message 异常提示
      * @return
      */
-    private boolean suffixCheck(MultipartFile file, Set<String> suffixSet, String message) {
+    private boolean suffixCheck(MultipartFile file, Set<String> suffixSet) {
         String fileName = file.getOriginalFilename();
         String fileSuffix=fileName.substring(fileName.lastIndexOf(".")+1);
-        for (String suffix : suffixSet) {
-            if (suffix.toUpperCase().equalsIgnoreCase(fileSuffix)) {
-                return true;
-            }
+        if(!suffixSet.contains(fileSuffix.trim().toLowerCase())){
+            return false;
         }
-        throw new HttpBizException(message);
+       return true;
     }
 
     /**
@@ -189,9 +206,10 @@ public class FileScanInterceptor extends HandlerInterceptorAdapter {
     private  boolean checkFile(String fileName){
         //获取文件后缀
         String suffix=fileName.substring(fileName.lastIndexOf(".")+1);
-        if(fileGuardConfig.getSuffix().contains(suffix.trim().toLowerCase())){
-            return true;
+        List<String> safeSuffixlist = Arrays.asList(fileGuardConfig.getSuffix().split(","));
+        if (!safeSuffixlist.contains(suffix.trim().toLowerCase())) {
+            return false;
         }
-        return false;
+        return true;
     }
 }

@@ -14,8 +14,7 @@ public class FileGuardRuleDefServiceImpl implements FileGuardRuleDefService {
      * @return
      */
     @Override
-    public boolean isSafe(Map<String, MultipartFile> files) {
-        System.out.println(files);
-        return true;
+    public boolean isSafe(String ruleId, Map<String, MultipartFile> files) {
+        return false;
     }
 }

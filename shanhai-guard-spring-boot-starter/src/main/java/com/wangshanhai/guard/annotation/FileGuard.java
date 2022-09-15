@@ -4,6 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 方法级文件校验
+ * @author Shmily
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -42,6 +43,11 @@ public @interface FileGuard {
      */
     boolean checkByRule() default false;
 
+    /**
+     * 自定义规则ID
+     * @return
+     */
+    String ruleId() default "";
     enum GuardType {
         /**
          * 仅校验后缀

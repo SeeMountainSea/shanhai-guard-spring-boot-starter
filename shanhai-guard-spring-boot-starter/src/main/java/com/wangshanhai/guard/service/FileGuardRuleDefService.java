@@ -11,8 +11,9 @@ import java.util.Map;
 public interface FileGuardRuleDefService {
     /**
      * 校验文件是否符合要求
+     * @param ruleId 自定义规则ID
      * @param files 文件清单
      * @return
      */
-    public boolean isSafe(Map<String, MultipartFile> files);
+    public boolean isSafe(String ruleId,Map<String, MultipartFile> files);
 }

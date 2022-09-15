@@ -23,6 +23,14 @@ public class FileGuardConfig {
      */
     private Boolean enable=false;
     /**
+     * 是否开启ZIP扫描
+     */
+    private Boolean zipScan=false;
+    /**
+     * ZIP压缩包可信范围
+     */
+    private String zipSafeSuffixs="";
+    /**
      * 拦截范围
      */
     private List<String> pathPatterns=new ArrayList<>();
