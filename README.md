@@ -37,4 +37,4 @@ ShanHaiGuard 主要提供以下能力：
 
   注：由于ShanHaiGuard是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
   
-  **使用指南**：[Wiki](https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/wiki/UserGuide-Ver-1.0)
+使用说明：https://seemountainsea.github.io/guard/
