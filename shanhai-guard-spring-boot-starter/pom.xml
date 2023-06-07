@@ -17,7 +17,7 @@
         <commonio.version>2.9.0</commonio.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
         <bcprov.version>1.69</bcprov.version>
-        <hutool.version>5.7.13</hutool.version>
+        <hutool.version>5.8.19</hutool.version>
     </properties>
     <dependencies>
         <dependency>
