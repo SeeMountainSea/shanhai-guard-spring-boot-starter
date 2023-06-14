@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 自定义异常
+ * @author Shmily
  */
 @Data
 @NoArgsConstructor

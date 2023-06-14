@@ -29,9 +29,13 @@ shanhai:
     limit-exist: false
     query-limit: 20000
   decodebody:
-    enable: false
+    enable: true
+    mode: 2
   respguard:
     enable: true
     trace-log: true
+  encodebody:
+    enable: true
+    mode: 2
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='

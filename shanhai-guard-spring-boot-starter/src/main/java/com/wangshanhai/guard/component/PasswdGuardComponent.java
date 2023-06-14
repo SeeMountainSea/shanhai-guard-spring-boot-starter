@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 密码检测组件
+ * @author Shmily
  */
 @Configuration
 @EnableConfigurationProperties(PasswdGuardConfig.class)

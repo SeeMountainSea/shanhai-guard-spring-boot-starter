@@ -10,6 +10,7 @@ import java.util.Objects;
 
 /**
  * 自定义序列化实现
+ * @author Shmily
  */
 public class RespDataSerializer extends StdScalarSerializer<Object> {
     private RespGuardRuleDefService respGuardRuleDefService;

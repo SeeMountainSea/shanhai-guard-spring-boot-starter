@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 数据加密&脱敏组件
+ * @author Shmily
  */
 @Configuration
 @ConditionalOnProperty(

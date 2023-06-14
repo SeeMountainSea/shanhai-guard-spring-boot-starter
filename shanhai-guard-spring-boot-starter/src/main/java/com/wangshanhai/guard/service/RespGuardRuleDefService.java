@@ -2,6 +2,7 @@ package com.wangshanhai.guard.service;
 
 /**
  * 使用自定义规则处理指定字段的数据
+ * @author Shmily
  */
 public interface RespGuardRuleDefService {
     /**

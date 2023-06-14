@@ -19,6 +19,7 @@ import java.util.Set;
 
 /**
  * XSS与SQL注入检测
+ * @author Shmily
  */
 public class XssCleanService  extends HttpServletRequestWrapper {
 

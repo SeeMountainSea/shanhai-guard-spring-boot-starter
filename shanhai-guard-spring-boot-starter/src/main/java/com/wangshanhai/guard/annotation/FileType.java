@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * 文件类型
+ * @author Shmily
  */
 @Getter
 public enum FileType {

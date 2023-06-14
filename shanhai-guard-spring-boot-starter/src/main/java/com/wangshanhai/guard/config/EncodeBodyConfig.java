@@ -7,29 +7,21 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * MYSQL 防护配置
+ * 自定义Body编码规则
  * @author Shmily
  */
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "shanhai.mysqlguard")
-public class MysqlGuardConfig {
+@ConfigurationProperties(prefix = "shanhai.encodebody")
+public class EncodeBodyConfig {
     /**
      * 是否开启
      */
     private Boolean enable=false;
     /**
-     * 要求包含where语句
+     * 解密模式（1: 全量 2:自定义 默认：1）
      */
-    private Boolean whereExist=false;
-    /**
-     * 要求包含where语句
-     */
-    private Boolean limitExist=false;
-    /**
-     * 每次查询数据的上限
-     */
-    private Integer queryLimit=20000;
+    private Integer mode=1;
 }

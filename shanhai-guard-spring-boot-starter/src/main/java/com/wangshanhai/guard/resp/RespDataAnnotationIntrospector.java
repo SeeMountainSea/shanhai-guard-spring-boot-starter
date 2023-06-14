@@ -7,6 +7,9 @@ import com.wangshanhai.guard.config.RespGuardConfig;
 import com.wangshanhai.guard.service.RespGuardRuleDefService;
 import com.wangshanhai.guard.utils.Logger;
 
+/**
+ * @author Shmily
+ */
 public class RespDataAnnotationIntrospector extends NopAnnotationIntrospector {
     private RespGuardConfig respGuardConfig;
     private RespGuardRuleDefService respGuardRuleDefService;

@@ -3,12 +3,11 @@ package com.wangshanhai.guard.annotation;
 import java.lang.annotation.*;
 
 /**
- * 启用数据防护
+ * 自加密忽略注解
  * @author Shmily
  */
-@Inherited
-@Target({ElementType.TYPE})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ShanHaiDataGuard {
-
+@Documented
+public @interface EncodeBodyIgnore {
 }

@@ -17,6 +17,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
  * 响应报文脱敏组件
+ * @author Shmily
  */
 @Configuration
 @ConditionalOnProperty(

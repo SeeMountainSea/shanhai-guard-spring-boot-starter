@@ -9,6 +9,7 @@ import java.io.IOException;
 /**
  * Web参数扫描过滤器
  * 支持过滤XSS & SQL 注入检测
+ * @author Shmily
  */
 public class WebScanFilter implements Filter {
     @Override

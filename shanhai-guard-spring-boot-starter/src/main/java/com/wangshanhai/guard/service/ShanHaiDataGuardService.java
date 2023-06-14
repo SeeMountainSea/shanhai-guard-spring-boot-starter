@@ -2,6 +2,9 @@ package com.wangshanhai.guard.service;
 
 import com.wangshanhai.guard.mybatis.ShanHaiTmpData;
 
+/**
+ * @author Shmily
+ */
 public interface ShanHaiDataGuardService {
     /**
      * 执行数据加密

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * SQL & XSS 注入检测
+ * @author Shmily
  */
 @Configuration
 @EnableConfigurationProperties(WebGuardConfig.class)

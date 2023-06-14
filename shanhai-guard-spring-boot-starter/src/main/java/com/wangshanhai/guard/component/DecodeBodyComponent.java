@@ -1,10 +1,12 @@
 package com.wangshanhai.guard.component;
 
+import com.wangshanhai.guard.annotation.DecodeBody;
+import com.wangshanhai.guard.annotation.DecodeBodyIgnore;
 import com.wangshanhai.guard.config.DecodeBodyConfig;
 import com.wangshanhai.guard.service.DecodeBodyService;
-import com.wangshanhai.guard.annotation.DecodeBodyIgnore;
-import org.apache.commons.io.IOUtils;
+import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * 自定义Body解码规则
+ * @author Shmily
  */
 @Configuration
 @EnableConfigurationProperties(DecodeBodyConfig.class)
@@ -34,11 +37,16 @@ import java.nio.charset.StandardCharsets;
 public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
     @Autowired
     private DecodeBodyService decodeBodyService;
+    @Autowired
+    private DecodeBodyConfig decodeBodyConfig;
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
         //判断是否对当前参数进行处理
         if(methodParameter.hasMethodAnnotation(DecodeBodyIgnore.class)){
+            return false;
+        }
+        if(decodeBodyConfig.getMode()==2&&!methodParameter.hasMethodAnnotation(DecodeBody.class)){
             return false;
         }
         return true;
@@ -48,7 +56,12 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
         try{
             String source= IOUtils.toString(inputMessage.getBody(), "utf-8");
-            String sourceContent=decodeBodyService.decodeRequestBody(source);
+            String sourceContent=null;
+            if(decodeBodyConfig.getMode()==1){
+                sourceContent=decodeBodyService.decodeRequestBody(source);
+            }else {
+                sourceContent=decodeBodyService.decodeRequestBody( parameter.getMethodAnnotation(DecodeBody.class).ruleId(),source);
+            }
             InputStream decodeInputStream=IOUtils.toInputStream(sourceContent, StandardCharsets.UTF_8.name());
             HttpInputMessage httpInputMessage=new HttpInputMessage() {
                     @Override
@@ -63,8 +76,7 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
             return super.beforeBodyRead(httpInputMessage, parameter, targetType, converterType);
         }catch (Exception e){
             Logger.error("[Request-Body-DecodeError]-msg:{}",e.getMessage());
-            e.printStackTrace();
+            throw  new HttpBizException("80001","请求参数解析异常");
         }
-        return null;
     }
 }

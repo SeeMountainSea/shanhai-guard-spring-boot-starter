@@ -6,6 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
+/**
+ * 数据防护配置
+ * @author Shmily
+ */
 @ConfigurationProperties(prefix = "shanhai.dataguard")
 public class DataGuardConfig {
     /**

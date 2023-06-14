@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * 默认实现
+ * @author Shmily
  */
 public class DefaultFileGuardRuleDefServiceImpl implements FileGuardRuleDefService {
     @Override

@@ -7,6 +7,7 @@ import java.util.Properties;
 
 /**
  * PEB解密算法
+ * @author Shmily
  */
 public class PBE extends PropertyDecode {
     @Override

@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 口令复杂度检测配置
+ * @author Shmily
  */
 @Builder
 @Data

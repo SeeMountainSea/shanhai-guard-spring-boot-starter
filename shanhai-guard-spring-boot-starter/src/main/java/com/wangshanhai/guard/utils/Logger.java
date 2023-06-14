@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 日志工具类
+ * @author Shmily
  */
 public class Logger {
     public Logger() {

@@ -12,6 +12,10 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * 配置加解密
+ * @author Shmily
+ */
 public class IEnvironmentPostProcessor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {

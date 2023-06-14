@@ -2,6 +2,7 @@ package com.wangshanhai.guard.dataplug;
 
 /**
  * 数据加解密
+ * @author Shmily
  */
 public class DataEncryptDef {
     /**

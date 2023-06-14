@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * SQL & xss注入检测配置
+ * @author Shmily
  */
 @Builder
 @Data

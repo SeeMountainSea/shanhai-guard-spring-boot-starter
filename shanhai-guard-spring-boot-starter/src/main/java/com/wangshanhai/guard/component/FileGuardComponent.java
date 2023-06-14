@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 文件上传检测组件
+ * @author Shmily
  */
 @Configuration
 @EnableConfigurationProperties(FileGuardConfig.class)

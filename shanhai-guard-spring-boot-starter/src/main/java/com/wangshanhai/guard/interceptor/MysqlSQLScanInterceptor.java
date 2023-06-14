@@ -12,6 +12,7 @@ import java.util.Properties;
 
 /**
  * SQL 查询拦截器 (mysql定制)
+ * @author Shmily
  */
 @Intercepts({
         @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})

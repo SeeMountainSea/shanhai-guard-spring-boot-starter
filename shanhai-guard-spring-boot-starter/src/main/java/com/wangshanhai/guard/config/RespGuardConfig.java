@@ -2,6 +2,10 @@ package com.wangshanhai.guard.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * 序列化编码配置
+ * @author Shmily
+ */
 @ConfigurationProperties(prefix = "shanhai.respguard")
 public class RespGuardConfig {
     /**

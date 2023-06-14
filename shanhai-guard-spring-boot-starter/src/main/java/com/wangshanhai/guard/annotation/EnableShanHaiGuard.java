@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * 启用山海Guard
+ * @author Shmily
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

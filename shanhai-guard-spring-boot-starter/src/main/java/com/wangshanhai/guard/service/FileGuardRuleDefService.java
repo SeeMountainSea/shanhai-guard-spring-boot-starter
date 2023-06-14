@@ -7,6 +7,7 @@ import java.util.Map;
 /**
  * 使用自定义规则校验文件上传
  * 使用场景:文件分片上传或其他需要的场景
+ * @author Shmily
  */
 public interface FileGuardRuleDefService {
     /**

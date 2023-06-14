@@ -3,13 +3,13 @@ package com.wangshanhai.guard.service;
 /**
  * @author Shmily
  */
-public interface DecodeBodyService {
+public interface EncodeBodyService {
     /**
      * 解析加密参数
      * @param body 加密报文
      * @return
      */
-    default String decodeRequestBody(String body){
+    default String encodeRespBody(String body){
         return body;
     };
 
@@ -19,7 +19,7 @@ public interface DecodeBodyService {
      * @param body 加密报文
      * @return
      */
-    default String decodeRequestBody(String ruleId,String body){
+    default String encodeRespBody(String ruleId,String body){
         return ruleId+"@"+body;
     };
 }

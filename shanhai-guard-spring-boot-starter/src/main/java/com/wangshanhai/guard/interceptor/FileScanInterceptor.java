@@ -24,6 +24,7 @@ import java.util.*;
 
 /**
  * 文件扫描拦截器
+ * @author Shmily
  */
 public class FileScanInterceptor extends HandlerInterceptorAdapter {
     /**

@@ -2,6 +2,7 @@ package com.wangshanhai.guard.dataplug;
 
 /**
  * 数据生效范围
+ * @author Shmily
  */
 public class DataExecModel {
     /**
