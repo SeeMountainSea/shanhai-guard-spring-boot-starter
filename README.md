@@ -14,27 +14,17 @@
     <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SeeMountainSea/shanhai-guard-spring-boot-starter?color=534BAE"/></a>
   </p>
 </div>
+山海Guard安全组件能力
 
-ShanHaiGuard 主要提供以下能力：
+| 组件名称               | 组件使用说明                                                 | 备注                                                       |
+| ---------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| 文件安全检测           | https://seemountainsea.github.io/guard/#_3-1-文件上传检测    | 支持对单个文件或压缩包进行文件安全细检测                   |
+| 密码复杂度检测         | https://seemountainsea.github.io/guard/#_3-2-密码复杂度检测  | 配置化高强度密码要求                                       |
+| sql&xss注入检测        | https://seemountainsea.github.io/guard/#_3-3-sql-xss注入检测 | 拦截常见注入风险                                           |
+| 配置文件参数加密       | https://seemountainsea.github.io/guard/#_3-6-springboot配置文件参数加密 | 支持自定义解密算法                                         |
+| 响应报文数据脱敏       | https://seemountainsea.github.io/guard/#_3-8基于序列化的响应报文数据脱敏 | 基于规则自行扩展                                           |
+| 字段级加解密与数据脱敏 | https://seemountainsea.github.io/guard/#_3-7-基于mybatis-plus进行字段级加解密与数据脱敏 | 基于mybatis-plus，也可以使用官方的，加密算法支持自定义扩展 |
+| 请求报文加密           | https://seemountainsea.github.io/guard/#_3-5-requestbody-通用解码组件 | 支持批量加密和单个加密，自行实现加密算法                   |
+| 响应报文加密           | v1.1.0同步maven仓库完毕后择机更新说明文档                    | 支持批量加密和单个加密，自行实现加密算法                   |
 
-- 支持全局文件上传安全检测 @Ver1.0.0+支持
-
-- 支持单个方法文件上传安全检测 @Ver1.0.0+支持
-
-- 支持单个方法文件上传自定义安全校验规则 @Ver1.0.1+支持
-
-- 支持基于Mybatis-Plus在进行数据字段级加密与脱敏（支持自行扩展实现相关算法）@Ver1.0.7+支持
-
-- 支持SQL注入&XSS注入安全检测 @Ver1.0.0+支持
-
-- 支持Mybatis SQL查询安全审核（1.x仅支持mysql）@Ver1.0.0+支持
-
-- 支持密码复杂度检验 @Ver1.0.0+支持
-
-- 支持拓展SpringBoot POST数据定制化解析，从而实现全局自动数据解析能力(例如数据解码,动态修改数据) @Ver1.0.0+支持
-
-- 支持对SpringBoot配置文件任意参数进行参数加密。默认算法为PBE，同时支持自己扩展解密算法（尚未适配SpringCloud和其他配置中心)  @Ver1.0.7+支持
-
-  注：由于ShanHaiGuard是基于SpringBoot 2.x的，因此可能有部分组件不支持SpringBoot1.x版本的。鉴于官方已经不再更新SpringBoot 1.X，因此不再考虑兼容SpringBoot1.x版本。
-  
-使用说明：https://seemountainsea.github.io/guard/
+更多说明：https://seemountainsea.github.io/guard/
