@@ -53,13 +53,15 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                  Map<String,Object> params=(Map)parameterObject;
                  for(String pk:params.keySet()){
                      Object pkObj=params.get(pk);
-                     Class<?> pkObjClass = pkObj.getClass();
-                     ShanHaiDataGuard shanHaiDataGuard = AnnotationUtils.findAnnotation(pkObjClass, ShanHaiDataGuard.class);
-                     if(shanHaiDataGuard!=null){
-                         //对类字段进行加密
-                         //取出当前当前类所有字段，传入加密方法
-                         Field[] declaredFields = pkObjClass.getDeclaredFields();
-                         encrypt(declaredFields, pkObj,DataExecModel.UPDATE,shanhaiDataGuardConfig);
+                     if(pkObj!=null){
+                         Class<?> pkObjClass = pkObj.getClass();
+                         ShanHaiDataGuard shanHaiDataGuard = AnnotationUtils.findAnnotation(pkObjClass, ShanHaiDataGuard.class);
+                         if(shanHaiDataGuard!=null){
+                             //对类字段进行加密
+                             //取出当前当前类所有字段，传入加密方法
+                             Field[] declaredFields = pkObjClass.getDeclaredFields();
+                             encrypt(declaredFields, pkObj,DataExecModel.UPDATE,shanhaiDataGuardConfig);
+                         }
                      }
                      ((Map)parameterObject).put(pk,pkObj);
                  }
