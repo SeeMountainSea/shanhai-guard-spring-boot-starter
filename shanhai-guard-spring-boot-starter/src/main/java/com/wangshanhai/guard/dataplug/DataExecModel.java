@@ -6,27 +6,32 @@ package com.wangshanhai.guard.dataplug;
  */
 public class DataExecModel {
     /**
+     * 未知
+     */
+    public static final String UNKNOWN ="UNKNOWN";
+    /**
      * 新增
      */
-    public static final String SAVE ="SAVE";
+    public static final String INSERT ="INSERT";
     /**
      * 更新
      */
     public static final String UPDATE ="UPDATE";
     /**
+     * 删除
+     */
+    public static final String DELETE ="DELETE";
+
+    /**
      * 查询
      */
-    public static final String QUERY ="QUERY";
+    public static final String SELECT ="SELECT";
     /**
      * 新增&更新
      */
-    public static final String SAVEANDUPDATE ="SAVEANDUPDATE";
+    public static final String INSERTANDUPDATE ="INSERTANDUPDATE";
     /**
-     * 新增&查询
+     * 新增&更新&查询
      */
-    public static final String SAVEANDQUERY ="SAVEANDQUERY";
-    /**
-     * 更新&查询
-     */
-    public static final String UPDATEANDQUERY ="UPDATEANDQUERY";
+    public static final String ALL ="ALL";
 }

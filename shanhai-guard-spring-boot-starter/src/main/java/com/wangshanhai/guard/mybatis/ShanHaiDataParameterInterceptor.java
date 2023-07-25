@@ -8,15 +8,14 @@ import com.wangshanhai.guard.dataplug.DataExecModel;
 import com.wangshanhai.guard.service.ShanHaiDataGuardService;
 import com.wangshanhai.guard.utils.Logger;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 数据防护处理
@@ -44,13 +43,32 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
         // 获取参数对像，即 mapper 中 paramsType 的实例
         Field parameterField = parameterHandler.getClass().getDeclaredField("parameterObject");
         parameterField.setAccessible(true);
+
+        Field sqlCommandTypeField = parameterHandler.getClass().getDeclaredField("sqlCommandType");
+        sqlCommandTypeField.setAccessible(true);
         //取出实例
         Object parameterObject = parameterField.get(parameterHandler);
+        SqlCommandType sqlCommandType= (SqlCommandType)sqlCommandTypeField.get(parameterHandler);
         //对类字段进行加密
         if(!Objects.isNull(parameterObject)){
             Class<?> parameterObjectClass = parameterObject.getClass();
+            //Mybatis数据处理(Mybatis-Plus的QueryWrapper也会走这个，但是解析不了，因此不支持该写法做参数设置)
             if(parameterObject instanceof Map){
-                 Map<String,Object> params=(Map)parameterObject;
+                Map<String,Object> paramsWait=(Map)parameterObject;
+                Map<String,Object> params=new HashMap<>();
+                ArrayList<String> paramsWaitList=new ArrayList<String>();
+                //对Mapper内的参数进行去重，否则会多次进行数据操作
+                for(String pk:paramsWait.keySet()){
+                    Object pkObj=paramsWait.get(pk);
+                    if(pkObj==null){
+                        params.put(pk,pkObj);
+                        continue;
+                    }
+                    if(!paramsWaitList.contains(pkObj.toString())){
+                        params.put(pk,pkObj);
+                        paramsWaitList.add(pkObj.toString());
+                    }
+                }
                  for(String pk:params.keySet()){
                      Object pkObj=params.get(pk);
                      if(pkObj!=null){
@@ -60,18 +78,21 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                              //对类字段进行加密
                              //取出当前当前类所有字段，传入加密方法
                              Field[] declaredFields = pkObjClass.getDeclaredFields();
-                             encrypt(declaredFields, pkObj,DataExecModel.UPDATE,shanhaiDataGuardConfig);
+                             dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
+                         }
+                         if(pkObjClass.getSimpleName().contains("Wrapper")){
+                             Logger.warn("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
                          }
                      }
                      ((Map)parameterObject).put(pk,pkObj);
                  }
-            }else{
+            }else{//Mybatis Plus数据处理
                 ShanHaiDataGuard shanHaiDataGuard = AnnotationUtils.findAnnotation(parameterObjectClass, ShanHaiDataGuard.class);
                 if(shanHaiDataGuard!=null){
                     //对类字段进行加密
                     //取出当前当前类所有字段，传入加密方法
                     Field[] declaredFields = parameterObjectClass.getDeclaredFields();
-                    encrypt(declaredFields, parameterObject, DataExecModel.SAVE,shanhaiDataGuardConfig);
+                    dataEscape(declaredFields, parameterObject,sqlCommandType,shanhaiDataGuardConfig);
                 }
             }
 
@@ -80,25 +101,25 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
     }
 
     /**
-     * 对特定字段使用特定加密算法进行数据加密
+     * 对指定对象的指定字段进行数据处理
      * @param declaredFields 字段
      * @param paramsObject 对象
-     * @param execModel 执行模式  1：新增 2：更新
+     * @param sqlCommandType 执行模式   INSERT|UPDATE|DELETE|SELECT
      * @param <T>
      * @return
      * @throws IllegalAccessException
      */
-    public <T> T encrypt(Field[] declaredFields, T paramsObject,String execModel,DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
+    public <T> T dataEscape (Field[] declaredFields, T paramsObject, SqlCommandType sqlCommandType,DataGuardConfig shanhaiDataGuardConfig) throws IllegalAccessException {
+        String execModel=sqlCommandType.name();
         //取出所有被EncryptTransaction注解的字段
         for (Field field : declaredFields) {
             FieldDataGuard encryptTransaction = field.getAnnotation(FieldDataGuard.class);
             if (!Objects.isNull(encryptTransaction)) {
                 field.setAccessible(true);
                 Object object = field.get(paramsObject);
-                //暂时只实现String类型的加密
+                //只处理String类型字段
                 if (object instanceof String) {
                     String value = (String) object;
-                    //加密
                     try {
                         String tmpText=value;
                         ShanHaiTmpData shanHaiTmpData=new ShanHaiTmpData();
@@ -106,18 +127,18 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                         shanHaiTmpData.setRuleId(encryptTransaction.ruleId());
                         shanHaiTmpData.setTargetClass(paramsObject.getClass().getName());
                         shanHaiTmpData.setTargetField(field.getName());
+                        //参数脱敏仅对新增|更新操作有效
                         if(encryptTransaction.hyposensit()){
                             boolean canExec=false;
-                            if(execModel.equals(DataExecModel.SAVE)){
-                                if(encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVE)
-                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDQUERY)){
+                            if(execModel.equals(DataExecModel.INSERT)){
+                                if(encryptTransaction.hyposensitExecModel().equals(DataExecModel.INSERT)
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.INSERTANDUPDATE)){
                                     canExec=true;
                                 }
-                            }else{
+                            }
+                            if(execModel.equals(DataExecModel.UPDATE)){
                                 if(encryptTransaction.hyposensitExecModel().equals(DataExecModel.UPDATE)
-                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.UPDATEANDQUERY)){
+                                        ||encryptTransaction.hyposensitExecModel().equals(DataExecModel.INSERTANDUPDATE)){
                                     canExec=true;
                                 }
                             }
@@ -127,22 +148,30 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                                 tmpText=dataGuardService.hyposensit(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[ShanhaiDataGuard-Update-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-setParameters-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }
+                        //参数加密仅对新增|更新|查询操作有效
                         if(encryptTransaction.encrypt()){
                             boolean canExec=false;
-                            if(execModel.equals( DataExecModel.SAVE)){
-                                if(encryptTransaction.encryptExecModel().equals(DataExecModel.SAVE)
-                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDQUERY)){
+                            if(execModel.equals(DataExecModel.INSERT)){
+                                if(encryptTransaction.encryptExecModel().equals(DataExecModel.INSERT)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.INSERTANDUPDATE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.ALL)){
                                     canExec=true;
                                 }
-                            }else{
+                            }
+                            if(execModel.equals(DataExecModel.UPDATE)){
                                 if(encryptTransaction.encryptExecModel().equals(DataExecModel.UPDATE)
-                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.INSERTANDUPDATE)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.ALL)){
+                                    canExec=true;
+                                }
+                            }
+                            if(execModel.equals(DataExecModel.SELECT)){
+                                if(encryptTransaction.encryptExecModel().equals(DataExecModel.SELECT)
+                                        ||encryptTransaction.encryptExecModel().equals(DataExecModel.ALL)){
                                     canExec=true;
                                 }
                             }
@@ -152,32 +181,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                                 tmpText=dataGuardService.encrypt(shanHaiTmpData);
                                 field.set(paramsObject,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[ShanhaiDataGuard-Update-Encrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
-                                }
-                            }
-                        }
-                        if(encryptTransaction.decrypt()){
-                            boolean canExec=false;
-                            if(execModel.equals( DataExecModel.SAVE)){
-                                if(encryptTransaction.decryptExecModel().equals(DataExecModel.SAVE)
-                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDQUERY)){
-                                    canExec=true;
-                                }
-                            }else{
-                                if(encryptTransaction.decryptExecModel().equals(DataExecModel.UPDATE)
-                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.SAVEANDUPDATE)
-                                        ||encryptTransaction.decryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
-                                    canExec=true;
-                                }
-                            }
-                            if(canExec){
-                                shanHaiTmpData.setSourceValue(tmpText);
-                                shanHaiTmpData.setDecryptMethod(encryptTransaction.decryptMethod());
-                                tmpText=dataGuardService.decrypt(shanHaiTmpData);
-                                field.set(paramsObject,tmpText);
-                                if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[ShanhaiDataGuard-Update-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-setParameters-Encrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }

@@ -42,11 +42,6 @@ public @interface FieldDataGuard {
      */
     String decryptMethod() default "";
     /**
-     * 执行解密算法的时机
-     * @return
-     */
-    String decryptExecModel() default "";
-    /**
      * 是否启用数据脱敏(新增和更新均会调用)
      * @return
      */

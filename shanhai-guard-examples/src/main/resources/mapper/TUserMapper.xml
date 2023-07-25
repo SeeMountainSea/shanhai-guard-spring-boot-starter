@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangshanhai.examples.mapper.TUserMapper">
+    <select id="selectOneById" resultType="com.wangshanhai.examples.domain.TUser"
+            parameterType="com.wangshanhai.examples.domain.TUser">
+        SELECT * FROM t_user u where 1=1
+        <if test="userForm.id != null ">
+            and u.id=#{userForm.id}
+        </if>
+    </select>
+    <select id="queryMapperList" resultType="com.wangshanhai.examples.domain.TUser"
+            parameterType="com.wangshanhai.examples.domain.TUser">
+        SELECT * FROM t_user u where 1=1
+        <if test="userForm.name != null ">
+            and u.name=#{userForm.name}
+        </if>
+    </select>
+    <insert id="saveBySql" parameterType="com.wangshanhai.examples.domain.TUser">
+        INSERT INTO t_user (name, create_time, user_desc)
+        VALUES(#{userForm.name},#{userForm.createTime},#{userForm.userDesc})
+    </insert>
+
+    <update id="updateBySql" parameterType="com.wangshanhai.examples.domain.TUser">
+        UPDATE t_user
+        SET name=#{userForm.name}, create_time=#{userForm.createTime}, user_desc=#{userForm.userDesc}
+        WHERE id=#{userForm.id}
+    </update>
+</mapper>

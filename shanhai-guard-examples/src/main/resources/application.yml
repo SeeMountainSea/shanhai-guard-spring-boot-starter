@@ -2,6 +2,26 @@ server:
   port: 18088
   servlet:
     context-path: /shanhai
+spring:
+  jackson:
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/shanhai_guard
+    username: root
+    password: root
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.wangshanhai.examples.domain
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
 shanhai:
   passwdguard:
     enable: true
@@ -12,7 +32,8 @@ shanhai:
     symbolExist: true
     keyboardNotExist: true
   dataguard:
-    enable: false
+    enable: true
+    trace-log: true
   fileguard:
     enable: true
     pathPatterns:

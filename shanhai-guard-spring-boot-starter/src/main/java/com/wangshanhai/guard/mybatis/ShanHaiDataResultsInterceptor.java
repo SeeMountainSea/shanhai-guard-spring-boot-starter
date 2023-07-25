@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * 批量处理数据查询结果
+ * @author Shmily
+ */
 @Component
 @Intercepts({
         @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})
@@ -82,32 +86,24 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                     try {
                         String tmpText=(String) object;
                         ShanHaiTmpData shanHaiTmpData=new ShanHaiTmpData();
-                        shanHaiTmpData.setExecModel(DataExecModel.QUERY);
+                        shanHaiTmpData.setExecModel(DataExecModel.SELECT);
                         shanHaiTmpData.setRuleId(fieldDataGuard.ruleId());
                         shanHaiTmpData.setTargetField(field.getName());
                         shanHaiTmpData.setTargetClass(result.getClass().getName());
+                        //数据解密（仅查询模式支持）
                         if(fieldDataGuard.decrypt()){
-                            boolean canExec=false;
-                            if(fieldDataGuard.decryptExecModel().equals(DataExecModel.QUERY)
-                                    ||fieldDataGuard.decryptExecModel().equals(DataExecModel.SAVEANDQUERY)
-                                    ||fieldDataGuard.decryptExecModel().equals(DataExecModel.UPDATEANDQUERY)){
-                                canExec=true;
-                            }
-                            if(canExec){
-                                shanHaiTmpData.setSourceValue(tmpText);
-                                shanHaiTmpData.setDecryptMethod(fieldDataGuard.decryptMethod());
-                                tmpText=dataGuardService.decrypt(shanHaiTmpData);
-                                field.set(result,tmpText);
-                                if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[ShanhaiDataGuard-Query-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
-                                }
+                            shanHaiTmpData.setSourceValue(tmpText);
+                            shanHaiTmpData.setDecryptMethod(fieldDataGuard.decryptMethod());
+                            tmpText=dataGuardService.decrypt(shanHaiTmpData);
+                            field.set(result,tmpText);
+                            if(shanhaiDataGuardConfig.isTraceLog()){
+                                Logger.info("[ShanhaiDataGuard-handleResultSets-Decrypt]-info:{},result:{}",shanHaiTmpData,tmpText);
                             }
                         }
+                        //数据脱敏（查询模式）
                         if(fieldDataGuard.hyposensit()){
                             boolean canExec=false;
-                            if(fieldDataGuard.hyposensitExecModel().equals(DataExecModel.QUERY)
-                                    ||fieldDataGuard.hyposensitExecModel().equals(DataExecModel.SAVEANDQUERY)
-                                    ||fieldDataGuard.hyposensitExecModel().equals(DataExecModel.UPDATEANDQUERY)){
+                            if(fieldDataGuard.hyposensitExecModel().equals(DataExecModel.SELECT)){
                                 canExec=true;
                             }
                             if(canExec){
@@ -116,11 +112,10 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
                                 tmpText=dataGuardService.hyposensit(shanHaiTmpData);
                                 field.set(result,tmpText);
                                 if(shanhaiDataGuardConfig.isTraceLog()){
-                                    Logger.info("[ShanhaiDataGuard-Query-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
+                                    Logger.info("[ShanhaiDataGuard-handleResultSets-Hyposensit]-info:{},result:{}",shanHaiTmpData,tmpText);
                                 }
                             }
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
