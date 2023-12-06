@@ -81,7 +81,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                              dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
                          }
                          if(pkObjClass.getSimpleName().contains("Wrapper")){
-                             Logger.warn("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
+                             Logger.info("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
                          }
                      }
                      ((Map)parameterObject).put(pk,pkObj);

@@ -21,11 +21,11 @@ public class PasswdGuardConfig {
      */
     private Boolean enable=false;
     /**
-     * 密码最小位数
+     * 密码最小位数(默认值：8)
      */
     private Integer minLength=8;
     /**
-     * 密码最大位数
+     * 密码最大位数(默认值：16)
      */
     private Integer maxLength=16;
     /**
@@ -44,4 +44,20 @@ public class PasswdGuardConfig {
      * 不包含键盘顺序
      */
     private Boolean keyboardNotExist=false;
+    /**
+     * 不包含相同字符
+     */
+    private Boolean allSameNotExist=false;
+    /**
+     * 相同字符连续个数(默认值：4)
+     */
+    private Integer allSameNum=4;
+    /**
+     * 不包含连续字符
+     */
+    private Boolean seqSameNotExist=false;
+    /**
+     * 连续字符连续个数(默认值：4)
+     */
+    private Integer seqSameNum=4;
 }

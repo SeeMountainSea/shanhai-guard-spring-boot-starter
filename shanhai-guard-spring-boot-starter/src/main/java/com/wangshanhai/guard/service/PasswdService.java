@@ -4,6 +4,11 @@ import com.wangshanhai.guard.config.PasswdGuardConfig;
 import com.wangshanhai.guard.utils.Logger;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 密码复杂度检测服务
  */
@@ -79,6 +84,14 @@ public class PasswdService {
             Logger.info("[Passwd-check-alert]-不能包含键盘连续字符");
             checkResult=false;
         }
+        if(passwdConfig.getAllSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getAllSameNum(),1)){
+            Logger.info("[Passwd-check-alert]-不能包含{}个相同字符",passwdConfig.getAllSameNum());
+            checkResult=false;
+        }
+        if(passwdConfig.getSeqSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getSeqSameNum(),2)){
+            Logger.info("[Passwd-check-alert]-不能包含{}个连续字符",passwdConfig.getSeqSameNum());
+            checkResult=false;
+        }
         return checkResult;
     }
     /**
@@ -145,5 +158,70 @@ public class PasswdService {
         }
         return false;
     }
+    /**
+     * 包含相同字符或连续字符
+     * @param str 原始字符串
+     * @param num 连续出现个数
+     * @param type 判断类型 1：完全相同 2：连续数据
+     * @return
+     */
+    private static boolean isContinuousChar(String str,int num,int type) {
+        char[] chars = str.toCharArray();
+        Map<Integer, List<Integer>> fz=new HashMap<>();
+        for (int i = 0; i < chars.length+1 - num; i++) {
+            List<Integer> charsTmpList=new ArrayList<>();
+            for(int j=i;j<num+i;j++){
+                charsTmpList.add((int) chars[j]);
+            }
+            fz.put(i,charsTmpList);
+        }
+        return  (type==1&& allSame(fz)) ||  (type==2&&  seqSame(fz));
+    }
+    private static boolean allSame(Map<Integer,List<Integer>> fz){
+        int sameNum=fz.keySet().size();
+        for(Integer k:fz.keySet()){
+            List<Integer> charsTmpList=fz.get(k);
+            if(charsTmpList==null){
+                return false;
+            }
+            Integer c=null;
+            for(Integer i:charsTmpList){
+                if(c==null){
+                    c=i;
+                }else{
+                    if(!i.equals(c)){
+                        sameNum--;
+                        break;
+                    }
+                }
+            }
+        }
+        if(sameNum>0){
+            return true;
+        }
+        return false;
+    }
 
+    private static boolean seqSame(Map<Integer,List<Integer>> fz){
+        int sameNum=fz.keySet().size();
+        for(Integer k:fz.keySet()){
+            List<Integer> charsTmpList=fz.get(k);
+            Integer bl=null;
+            for(int i=0;i<charsTmpList.size()-1;i++){
+                Integer blc= charsTmpList.get(i + 1) - charsTmpList.get(i);
+                if(bl==null){
+                    bl =blc;
+                }else{
+                    if(!blc.equals(bl)){
+                        sameNum--;
+                        break;
+                    }
+                }
+            }
+        }
+        if(sameNum>0){
+            return true;
+        }
+        return false;
+    }
 }
