@@ -68,6 +68,25 @@ public class PBEUtils {
         return encryptBASE64(cipher.doFinal(data.getBytes()));
     }
 
+
+    /**
+     * 安全模式加密
+     * @param data 数据
+     * @param password 密码
+     * @param salt 盐
+     * @param cycleNum 循环次数（>100000）
+     * @return
+     * @throws Exception
+     */
+    public static String encryptSafe(String data, String password, String salt,int cycleNum)
+            throws Exception {
+        Key key = toKey(password);
+        PBEParameterSpec paramSpec = new PBEParameterSpec(decryptBASE64(salt), cycleNum>10000?cycleNum:100000);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+        return encryptBASE64(cipher.doFinal(data.getBytes()));
+    }
+
     /**
      * 解密
      *
@@ -81,6 +100,24 @@ public class PBEUtils {
             throws Exception {
         Key key = toKey(password);
         PBEParameterSpec paramSpec = new PBEParameterSpec(decryptBASE64(salt), 100);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+        return new String(cipher.doFinal(decryptBASE64(data)));
+    }
+
+    /**
+     * 安全模式解密
+     * @param data 数据
+     * @param password 密码
+     * @param salt 盐
+     * @param cycleNum 循环次数（>10000）
+     * @return
+     * @throws Exception
+     */
+    public static String decryptSafe(String data, String password, String salt,int cycleNum)
+            throws Exception {
+        Key key = toKey(password);
+        PBEParameterSpec paramSpec = new PBEParameterSpec(decryptBASE64(salt), cycleNum>10000?cycleNum:100000);
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         return new String(cipher.doFinal(decryptBASE64(data)));
@@ -104,5 +141,20 @@ public class PBEUtils {
      */
     public static String encryptBASE64(byte[] key) throws Exception {
         return (new BASE64Encoder()).encodeBuffer(key);
+    }
+
+    public static void main(String[] args) throws Exception {
+        //生成盐值
+        String salt= PBEUtils.initSalt();
+        //自定义密钥
+        String passwd="20220111";
+        //待加密参数值
+        String val="zhangsanxxx1";
+        String encryptStr=PBEUtils.encryptSafe(val,passwd,salt,100000);
+        //加密结果
+        System.out.println("salt:"+salt);
+        System.out.println("encryptStr:"+encryptStr);
+        //解密结果
+        System.out.println(PBEUtils.decryptSafe(encryptStr,passwd,salt,100000));
     }
 }
