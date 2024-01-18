@@ -16,12 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * User
- *
- * @author Fly.Sky
- * @since 2023/7/23 16:23
- */
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

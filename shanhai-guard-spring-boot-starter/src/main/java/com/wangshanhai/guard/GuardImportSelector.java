@@ -18,7 +18,8 @@ public class GuardImportSelector implements ImportSelector {
                 "com.wangshanhai.guard.component.DataGuardComponent",
                 "com.wangshanhai.guard.component.RespDataGuardComponent",
                 "com.wangshanhai.guard.component.EncodeBodyComponent",
-                "com.wangshanhai.guard.component.DecodeBodyComponent"
+                "com.wangshanhai.guard.component.DecodeBodyComponent",
+                "com.wangshanhai.guard.component.SensitiveWordsComponent"
         };
     }
 }

@@ -1,4 +1,4 @@
-package com.wangshanhai.guard.service;
+package com.wangshanhai.guard.filter.wapper;
 
 import com.wangshanhai.guard.utils.Logger;
 import org.springframework.util.StreamUtils;
@@ -21,12 +21,15 @@ import java.util.Set;
  * XSS与SQL注入检测
  * @author Shmily
  */
-public class XssCleanService  extends HttpServletRequestWrapper {
+public class WebScanWrapper extends HttpServletRequestWrapper {
 
     private static String key = "and|exec|insert|select|delete|update|count|*|%|chr|mid|master|truncate|char|declare|;|or|-|+";
     private static Set<String> notAllowedKeyWords = new HashSet<String>(0);
     private static String replacedString = "INVALID";
-    private final byte[] body; //用于保存读取body中数据
+    /**
+     * 用于保存读取body中数据
+     */
+    private final byte[] body;
     private String currentUrl;
 
     static {
@@ -36,15 +39,14 @@ public class XssCleanService  extends HttpServletRequestWrapper {
         }
     }
 
-    public XssCleanService(HttpServletRequest request) throws IOException {
+    public WebScanWrapper(HttpServletRequest request) throws IOException {
         super(request);
         currentUrl = request.getRequestURI();
         body = StreamUtils.copyToByteArray(request.getInputStream());
     }
 
     /**
-     * @Description 覆盖getParameter方法，将参数和参数值做xss过滤
-     * @Date 2020/5/20 9:57
+     * 覆盖getParameter方法，将参数和参数值做xss过滤
      */
     @Override
     public String getParameter(String name) {
@@ -99,7 +101,7 @@ public class XssCleanService  extends HttpServletRequestWrapper {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        final ByteArrayInputStream bais = new ByteArrayInputStream(body);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(body.length>0?cleanXss(new String(body)).getBytes():body);
         return new ServletInputStream() {
 
             @Override

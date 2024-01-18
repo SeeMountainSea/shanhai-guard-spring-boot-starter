@@ -2,6 +2,7 @@ server:
   port: 18088
   servlet:
     context-path: /shanhai
+
 spring:
   jackson:
     time-zone: GMT+8
@@ -45,7 +46,7 @@ shanhai:
     suffix: jpg,gif,png,ico,bmp,jpeg
     logTarce: true
   webguard:
-    enable: false
+    enable: true
     path-patterns:
       - '/*'
   mysqlguard:
@@ -55,12 +56,20 @@ shanhai:
     query-limit: 20000
   decodebody:
     enable: true
-    mode: 2
+    mode: 1
   respguard:
     enable: true
     trace-log: true
   encodebody:
     enable: true
     mode: 2
+  sensitivewords:
+    enable: true
+    sensitive-filter-mode: 1
+    path-patterns:
+      - '/*'
+    sensitive-words: "今天, 今天很好, 今天真烦"
+    task-enable: true
+    task-inteval-period: 60
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='

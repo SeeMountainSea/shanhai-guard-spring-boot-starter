@@ -24,4 +24,12 @@ public class DecodeBodyConfig {
      * 解密模式（1: 全量 2:自定义 默认：1）
      */
     private Integer mode=1;
+    /**
+     * 是否启用敏感词过滤
+     */
+    private Boolean enableSensitive=false;
+    /**
+     * 敏感词过滤模式 （1:自动脱敏存储 2:拒绝执行）
+     */
+    private Integer sensitiveFilterMode=1;
 }

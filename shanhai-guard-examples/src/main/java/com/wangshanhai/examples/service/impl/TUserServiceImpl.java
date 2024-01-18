@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * User
- *
  * @author Fly.Sky
- * @since 2023/7/23 16:29
  */
 @Service
 public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements TUserService {
