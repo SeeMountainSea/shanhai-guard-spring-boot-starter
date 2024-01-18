@@ -25,6 +25,7 @@
 | 响应报文数据脱敏       | https://seemountainsea.github.io/guard/#_3-8基于序列化的响应报文数据脱敏 | 基于规则自行扩展                                           |
 | 字段级加解密与数据脱敏 | https://seemountainsea.github.io/guard/#_3-7-基于mybatis-plus进行字段级加解密与数据脱敏 | 基于mybatis-plus，也可以使用官方的，加密算法支持自定义扩展 |
 | 请求报文加密           | https://seemountainsea.github.io/guard/#_3-5-requestbody-通用解码组件 | 支持批量加密和单个加密，自行实现加密算法                   |
-| 响应报文加密           | v1.1.0同步maven仓库完毕后择机更新说明文档                    | 支持批量加密和单个加密，自行实现加密算法                   |
+| 响应报文加密           | https://seemountainsea.github.io/guard/#_3-9通用响应报文编码组件 | 支持批量加密和单个加密，自行实现加密算法                   |
+| 敏感词检测过滤         | https://seemountainsea.github.io/guard/#_3-10-敏感词检测过滤组件 | 支持对请求参数进行敏感词检测                               |
 
 更多说明：https://seemountainsea.github.io/guard/
