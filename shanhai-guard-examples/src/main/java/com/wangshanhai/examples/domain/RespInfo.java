@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//@RespDataGuard
 public class RespInfo {
     @RespFieldGuard(ruleId = "text")
     private String text;
-    @RespFieldGuard(ruleId = "msg")
     private String msg;
     private Integer code;
 }

@@ -8,8 +8,20 @@ public interface RespGuardRuleDefService {
     /**
      * 自定义处理字段方法
      * @param ruleId 规则ID
-     * @param fieldValue 文件清单
+     * @param fieldValue 字段值
      * @return
      */
-    public Object jsonGenerator(String ruleId,Object fieldValue);
+    default Object jsonGenerator(String ruleId,Object fieldValue){
+        return fieldValue;
+    }
+    /**
+     * 自定义处理该类该字段的方法
+     * @param tragetClass 目标类
+     * @param tragetField 目标字段
+     * @param fieldValue 字段值
+     * @return
+     */
+    default Object jsonDynamicGenerator(String tragetClass,Object tragetField,Object fieldValue){
+        return fieldValue;
+    }
 }

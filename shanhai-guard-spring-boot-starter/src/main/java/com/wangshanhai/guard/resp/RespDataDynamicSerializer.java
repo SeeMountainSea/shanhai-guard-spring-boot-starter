@@ -14,29 +14,29 @@ import java.util.Objects;
  * 自定义序列化实现
  * @author Shmily
  */
-public class RespDataSerializer extends StdScalarSerializer<Object> {
+public class RespDataDynamicSerializer extends StdScalarSerializer<Object> {
     private RespGuardRuleDefService respGuardRuleDefService;
-    private RespGuardConfig respGuardConfig;
-    private String ruleId;
     private String tragetClass;
-    public RespDataSerializer(Class<Object> t,RespGuardRuleDefService respGuardRuleDefService,String ruleId,
-                             String tragetClass, RespGuardConfig respGuardConfig) {
+    private String tragetField;
+    private RespGuardConfig respGuardConfig;
+    public RespDataDynamicSerializer(Class<Object> t, RespGuardRuleDefService respGuardRuleDefService, String tragetClass,
+                                     String tragetField, RespGuardConfig respGuardConfig ) {
         super(t);
         this.respGuardRuleDefService=respGuardRuleDefService;
-        this.ruleId=ruleId;
         this.tragetClass=tragetClass;
+        this.tragetField=tragetField;
         this.respGuardConfig=respGuardConfig;
     }
-    protected RespDataSerializer(Class<Object> t) {
+    protected RespDataDynamicSerializer(Class<Object> t) {
         super(t);
     }
     @Override
     public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         if (!Objects.isNull(value)) {
             if(respGuardConfig.isTraceLog()){
-                Logger.info("[ShanhaiRespGuard-RespFieldGuard]-class:{},ruleId:{}",tragetClass,ruleId);
+                Logger.info("[ShanhaiRespGuard-RespDataGuard]-class:{},field:{}",tragetClass,tragetField);
             }
-            jsonGenerator.writeObject(respGuardRuleDefService.jsonGenerator(ruleId,value));
+            jsonGenerator.writeObject(respGuardRuleDefService.jsonDynamicGenerator(tragetClass,tragetField,value));
         }
     }
 }
