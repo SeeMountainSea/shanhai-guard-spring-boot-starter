@@ -21,6 +21,10 @@ public class DataGuardConfig {
      */
     private boolean traceLog=false;
     /**
+     * 启用性能监控
+     */
+    private boolean slowFilter=false;
+    /**
      * 自定义正则脱敏规则
      */
     private List<HyposensitRule> hyposensitRulesExt;
@@ -59,5 +63,13 @@ public class DataGuardConfig {
 
     public void setTraceLog(boolean traceLog) {
         this.traceLog = traceLog;
+    }
+
+    public boolean isSlowFilter() {
+        return slowFilter;
+    }
+
+    public void setSlowFilter(boolean slowFilter) {
+        this.slowFilter = slowFilter;
     }
 }

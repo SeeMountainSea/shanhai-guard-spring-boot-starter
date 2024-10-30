@@ -1,5 +1,6 @@
 package com.wangshanhai.guard.mybatis;
 
+import com.alibaba.fastjson2.JSON;
 import com.wangshanhai.guard.annotation.FieldDataGuard;
 import com.wangshanhai.guard.annotation.ShanHaiDataGuard;
 import com.wangshanhai.guard.config.DataGuardConfig;
@@ -39,6 +40,7 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        long start=System.currentTimeMillis();
         //取出查询的结果
         Object resultObject = invocation.proceed();
         if (Objects.isNull(resultObject)) {
@@ -59,6 +61,9 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
             if (needToDecrypt(resultObject)) {
                 decrypt(resultObject,shanhaiDataGuardConfig);
             }
+        }
+        if(shanhaiDataGuardConfig.isSlowFilter()){
+            Logger.info("[ShanhaiDataGuard-handleResultSets-execTime]-time(s):{},resultObject:{}",(System.currentTimeMillis()-start)/1000, JSON.toJSONString(resultObject));
         }
         return resultObject;
     }

@@ -37,6 +37,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        long start=System.currentTimeMillis();
         //@Signature 指定了 type= parameterHandler 后，这里的 invocation.getTarget() 便是parameterHandler
         //若指定ResultSetHandler ，这里则能强转为ResultSetHandler
         MybatisParameterHandler parameterHandler = (MybatisParameterHandler) invocation.getTarget();
@@ -81,7 +82,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                              dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
                          }
                          if(pkObjClass.getSimpleName().contains("Wrapper")){
-                             Logger.info("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
+                             Logger.debug("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
                          }
                      }
                      ((Map)parameterObject).put(pk,pkObj);
@@ -96,6 +97,9 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                 }
             }
 
+        }
+        if(shanhaiDataGuardConfig.isSlowFilter()){
+            Logger.info("[ShanhaiDataGuard-setParameters-execTime]-time(s):{},parameterObject:{}",(System.currentTimeMillis()-start)/1000,parameterHandler);
         }
         return invocation.proceed();
     }

@@ -39,6 +39,7 @@ shanhai:
   dataguard:
     enable: true
     trace-log: true
+    slow-filter: true
   fileguard:
     enable: true
     pathPatterns:

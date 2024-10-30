@@ -1,6 +1,6 @@
 package com.wangshanhai.guard.component;
 
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
 import com.wangshanhai.guard.annotation.EncodeBody;
 import com.wangshanhai.guard.annotation.EncodeBodyIgnore;
 import com.wangshanhai.guard.config.EncodeBodyConfig;
@@ -52,9 +52,9 @@ public class EncodeBodyComponent implements ResponseBodyAdvice {
         try{
             String respBody=null;
             if(encodeBodyConfig.getMode()==1){
-                respBody=encodeBodyService.encodeRespBody(JSONUtil.toJsonStr(body));
+                respBody=encodeBodyService.encodeRespBody(JSON.toJSONString(body));
             }else {
-                respBody=encodeBodyService.encodeRespBody( methodParameter.getMethodAnnotation(EncodeBody.class).ruleId(),JSONUtil.toJsonStr(body));
+                respBody=encodeBodyService.encodeRespBody( methodParameter.getMethodAnnotation(EncodeBody.class).ruleId(),JSON.toJSONString(body));
             }
             response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
             return respBody;
