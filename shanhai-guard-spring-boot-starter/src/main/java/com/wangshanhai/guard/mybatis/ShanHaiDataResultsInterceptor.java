@@ -1,13 +1,15 @@
 package com.wangshanhai.guard.mybatis;
 
-import com.alibaba.fastjson2.JSON;
 import com.wangshanhai.guard.annotation.FieldDataGuard;
 import com.wangshanhai.guard.annotation.ShanHaiDataGuard;
 import com.wangshanhai.guard.config.DataGuardConfig;
 import com.wangshanhai.guard.dataplug.DataExecModel;
 import com.wangshanhai.guard.service.ShanHaiDataGuardService;
 import com.wangshanhai.guard.utils.Logger;
+import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
@@ -63,7 +65,20 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
             }
         }
         if(shanhaiDataGuardConfig.isSlowFilter()){
-            Logger.info("[ShanhaiDataGuard-handleResultSets-execTime]-time(s):{},resultObject:{}",(System.currentTimeMillis()-start)/1000, JSON.toJSONString(resultObject));
+            DefaultResultSetHandler   defaultResultSetHandler = (DefaultResultSetHandler) invocation.getTarget();
+            Field boundSqlField = defaultResultSetHandler.getClass().getDeclaredField("boundSql");
+            boundSqlField.setAccessible(true);
+            BoundSql boundSql = (BoundSql) boundSqlField.get(defaultResultSetHandler);
+            Field mappedStatementField = defaultResultSetHandler.getClass().getDeclaredField("mappedStatement");
+            mappedStatementField.setAccessible(true);
+            MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(defaultResultSetHandler);
+            long time=System.currentTimeMillis()-start;
+            if(time>shanhaiDataGuardConfig.getSlowTime()){
+                Logger.warn("[ShanhaiDataGuard-handleResultSets-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+            }
+            if(shanhaiDataGuardConfig.isTraceLog()){
+                Logger.info("[ShanhaiDataGuard-handleResultSets-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+            }
         }
         return resultObject;
     }

@@ -8,6 +8,8 @@ import com.wangshanhai.guard.dataplug.DataExecModel;
 import com.wangshanhai.guard.service.ShanHaiDataGuardService;
 import com.wangshanhai.guard.utils.Logger;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -37,6 +39,7 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        Object[] args=invocation.getArgs();
         long start=System.currentTimeMillis();
         //@Signature 指定了 type= parameterHandler 后，这里的 invocation.getTarget() 便是parameterHandler
         //若指定ResultSetHandler ，这里则能强转为ResultSetHandler
@@ -81,8 +84,10 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                              Field[] declaredFields = pkObjClass.getDeclaredFields();
                              dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
                          }
-                         if(pkObjClass.getSimpleName().contains("Wrapper")){
-                             Logger.debug("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
+                         if(shanhaiDataGuardConfig.isTraceLog()){
+                             if(pkObjClass.getSimpleName().contains("Wrapper")){
+                                 Logger.debug("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
+                             }
                          }
                      }
                      ((Map)parameterObject).put(pk,pkObj);
@@ -99,7 +104,19 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
 
         }
         if(shanhaiDataGuardConfig.isSlowFilter()){
-            Logger.info("[ShanhaiDataGuard-setParameters-execTime]-time(s):{},parameterObject:{}",(System.currentTimeMillis()-start)/1000,parameterHandler);
+            Field boundSqlField = parameterHandler.getClass().getDeclaredField("boundSql");
+            boundSqlField.setAccessible(true);
+            BoundSql boundSql = (BoundSql) boundSqlField.get(parameterHandler);
+            Field mappedStatementField = parameterHandler.getClass().getDeclaredField("mappedStatement");
+            mappedStatementField.setAccessible(true);
+            MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(parameterHandler);
+            long time=System.currentTimeMillis()-start;
+            if(time>shanhaiDataGuardConfig.getSlowTime()){
+                Logger.warn("[ShanhaiDataGuard-setParameters-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+            }
+            if(shanhaiDataGuardConfig.isTraceLog()){
+                Logger.info("[ShanhaiDataGuard-setParameters-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+            }
         }
         return invocation.proceed();
     }

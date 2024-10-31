@@ -25,6 +25,10 @@ public class DataGuardConfig {
      */
     private boolean slowFilter=false;
     /**
+     * 性能预警最小值（单位：ms）
+     */
+    private int slowTime=1000;
+    /**
      * 自定义正则脱敏规则
      */
     private List<HyposensitRule> hyposensitRulesExt;
@@ -71,5 +75,13 @@ public class DataGuardConfig {
 
     public void setSlowFilter(boolean slowFilter) {
         this.slowFilter = slowFilter;
+    }
+
+    public int getSlowTime() {
+        return slowTime;
+    }
+
+    public void setSlowTime(int slowTime) {
+        this.slowTime = slowTime;
     }
 }
