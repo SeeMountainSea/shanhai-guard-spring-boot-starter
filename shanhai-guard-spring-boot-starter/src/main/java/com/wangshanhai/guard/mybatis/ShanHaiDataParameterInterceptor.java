@@ -12,7 +12,6 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -39,20 +38,39 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        Object[] args=invocation.getArgs();
         long start=System.currentTimeMillis();
         //@Signature 指定了 type= parameterHandler 后，这里的 invocation.getTarget() 便是parameterHandler
         //若指定ResultSetHandler ，这里则能强转为ResultSetHandler
         MybatisParameterHandler parameterHandler = (MybatisParameterHandler) invocation.getTarget();
+        Field mappedStatementField = parameterHandler.getClass().getDeclaredField("mappedStatement");
+        mappedStatementField.setAccessible(true);
+        MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(parameterHandler);
+        Field sqlCommandTypeField = parameterHandler.getClass().getDeclaredField("sqlCommandType");
+        sqlCommandTypeField.setAccessible(true);
+        SqlCommandType sqlCommandType= (SqlCommandType)sqlCommandTypeField.get(parameterHandler);
+        try{
+            ShanHaiDataGuard shanHaiDataGuard;
+            if(sqlCommandType.name().equals(DataExecModel.INSERT)||
+                    sqlCommandType.name().equals(DataExecModel.UPDATE)){
+                shanHaiDataGuard=mappedStatement.getParameterMap().getType().getAnnotation(ShanHaiDataGuard.class);
+            }else{
+                shanHaiDataGuard = mappedStatement.getResultMaps().get(0).getType().getAnnotation(ShanHaiDataGuard.class);
+            }
+            if(shanHaiDataGuard==null){
+                if(shanhaiDataGuardConfig.isTraceLog()){
+                    Logger.info("[ShanhaiDataGuard-setParameters-skip]-mapper:{}",mappedStatement.getId());
+                }
+                return  invocation.proceed();
+            }
+        }catch (Exception e){
+            Logger.error("[ShanhaiDataGuard-setParameters-loaderror]-mapper:{},msg:{}",mappedStatement.getId(),e.getMessage());
+            return  invocation.proceed();
+        }
         // 获取参数对像，即 mapper 中 paramsType 的实例
         Field parameterField = parameterHandler.getClass().getDeclaredField("parameterObject");
         parameterField.setAccessible(true);
-
-        Field sqlCommandTypeField = parameterHandler.getClass().getDeclaredField("sqlCommandType");
-        sqlCommandTypeField.setAccessible(true);
         //取出实例
         Object parameterObject = parameterField.get(parameterHandler);
-        SqlCommandType sqlCommandType= (SqlCommandType)sqlCommandTypeField.get(parameterHandler);
         //对类字段进行加密
         if(!Objects.isNull(parameterObject)){
             Class<?> parameterObjectClass = parameterObject.getClass();
@@ -77,13 +95,10 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                      Object pkObj=params.get(pk);
                      if(pkObj!=null){
                          Class<?> pkObjClass = pkObj.getClass();
-                         ShanHaiDataGuard shanHaiDataGuard = AnnotationUtils.findAnnotation(pkObjClass, ShanHaiDataGuard.class);
-                         if(shanHaiDataGuard!=null){
-                             //对类字段进行加密
-                             //取出当前当前类所有字段，传入加密方法
-                             Field[] declaredFields = pkObjClass.getDeclaredFields();
-                             dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
-                         }
+                         //对类字段进行加密
+                         //取出当前当前类所有字段，传入加密方法
+                         Field[] declaredFields = pkObjClass.getDeclaredFields();
+                         dataEscape(declaredFields, pkObj,sqlCommandType,shanhaiDataGuardConfig);
                          if(shanhaiDataGuardConfig.isTraceLog()){
                              if(pkObjClass.getSimpleName().contains("Wrapper")){
                                  Logger.debug("[ShanhaiDataGuard-setParameters-plus]-type:{} is not support",pkObjClass.getSimpleName());
@@ -92,14 +107,12 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
                      }
                      ((Map)parameterObject).put(pk,pkObj);
                  }
-            }else{//Mybatis Plus数据处理
-                ShanHaiDataGuard shanHaiDataGuard = AnnotationUtils.findAnnotation(parameterObjectClass, ShanHaiDataGuard.class);
-                if(shanHaiDataGuard!=null){
-                    //对类字段进行加密
-                    //取出当前当前类所有字段，传入加密方法
-                    Field[] declaredFields = parameterObjectClass.getDeclaredFields();
-                    dataEscape(declaredFields, parameterObject,sqlCommandType,shanhaiDataGuardConfig);
-                }
+            }else{
+                //Mybatis Plus数据处理
+                //对类字段进行加密
+                //取出当前当前类所有字段，传入加密方法
+                Field[] declaredFields = parameterObjectClass.getDeclaredFields();
+                dataEscape(declaredFields, parameterObject,sqlCommandType,shanhaiDataGuardConfig);
             }
 
         }
@@ -107,12 +120,9 @@ public class ShanHaiDataParameterInterceptor implements Interceptor {
             Field boundSqlField = parameterHandler.getClass().getDeclaredField("boundSql");
             boundSqlField.setAccessible(true);
             BoundSql boundSql = (BoundSql) boundSqlField.get(parameterHandler);
-            Field mappedStatementField = parameterHandler.getClass().getDeclaredField("mappedStatement");
-            mappedStatementField.setAccessible(true);
-            MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(parameterHandler);
             long time=System.currentTimeMillis()-start;
             if(time>shanhaiDataGuardConfig.getSlowTime()){
-                Logger.warn("[ShanhaiDataGuard-setParameters-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+                Logger.warn("[ShanhaiDataGuard-setParameters-slow]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
             }
             if(shanhaiDataGuardConfig.isTraceLog()){
                 Logger.info("[ShanhaiDataGuard-setParameters-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());

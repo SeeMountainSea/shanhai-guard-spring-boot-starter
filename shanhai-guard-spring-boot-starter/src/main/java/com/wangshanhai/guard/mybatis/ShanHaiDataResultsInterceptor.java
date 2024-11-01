@@ -43,6 +43,22 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         long start=System.currentTimeMillis();
+        DefaultResultSetHandler   defaultResultSetHandler = (DefaultResultSetHandler) invocation.getTarget();
+        Field mappedStatementField = defaultResultSetHandler.getClass().getDeclaredField("mappedStatement");
+        mappedStatementField.setAccessible(true);
+        MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(defaultResultSetHandler);
+        try{
+            ShanHaiDataGuard shanHaiDataGuard=mappedStatement.getResultMaps().get(0).getType().getAnnotation(ShanHaiDataGuard.class);
+            if(shanHaiDataGuard==null){
+                if(shanhaiDataGuardConfig.isTraceLog()){
+                    Logger.info("[ShanhaiDataGuard-handleResultSets-skip]-mapper:{}",mappedStatement.getId());
+                }
+                return  invocation.proceed();
+            }
+        }catch (Exception e){
+            Logger.error("[ShanhaiDataGuard-handleResultSets-loaderror]-mapper:{},msg:{}",mappedStatement.getId(),e.getMessage());
+            return invocation.proceed();
+        }
         //取出查询的结果
         Object resultObject = invocation.proceed();
         if (Objects.isNull(resultObject)) {
@@ -65,16 +81,12 @@ public class ShanHaiDataResultsInterceptor implements Interceptor {
             }
         }
         if(shanhaiDataGuardConfig.isSlowFilter()){
-            DefaultResultSetHandler   defaultResultSetHandler = (DefaultResultSetHandler) invocation.getTarget();
             Field boundSqlField = defaultResultSetHandler.getClass().getDeclaredField("boundSql");
             boundSqlField.setAccessible(true);
             BoundSql boundSql = (BoundSql) boundSqlField.get(defaultResultSetHandler);
-            Field mappedStatementField = defaultResultSetHandler.getClass().getDeclaredField("mappedStatement");
-            mappedStatementField.setAccessible(true);
-            MappedStatement mappedStatement = (MappedStatement) mappedStatementField.get(defaultResultSetHandler);
             long time=System.currentTimeMillis()-start;
             if(time>shanhaiDataGuardConfig.getSlowTime()){
-                Logger.warn("[ShanhaiDataGuard-handleResultSets-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
+                Logger.warn("[ShanhaiDataGuard-handleResultSets-slow]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
             }
             if(shanhaiDataGuardConfig.isTraceLog()){
                 Logger.info("[ShanhaiDataGuard-handleResultSets-execTime]-time(ms):{},mapper:{},sql:{}",time,mappedStatement.getId(),boundSql.getSql());
