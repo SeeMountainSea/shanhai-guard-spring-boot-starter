@@ -21,6 +21,14 @@ public class PasswdGuardConfig {
      */
     private Boolean enable=false;
     /**
+     * 检测模式 1:配置模式 2:权重打分模式
+     */
+    private Integer mode=1;
+    /**
+     * 权重打分模式下最小打分值
+     */
+    private Integer minWeight=1;
+    /**
      * 密码最小位数(默认值：8)
      */
     private Integer minLength=8;
@@ -40,6 +48,10 @@ public class PasswdGuardConfig {
      * 包含特殊符号
      */
     private Boolean symbolExist=false;
+    /**
+     * 自定义特特殊符号正则，参考格式： ".*[~!@#$%^&*()_+|<>,.?/:;'\\[\\]{}\"]+.*"
+     */
+    private String symbolReg;
     /**
      * 不包含键盘顺序
      */

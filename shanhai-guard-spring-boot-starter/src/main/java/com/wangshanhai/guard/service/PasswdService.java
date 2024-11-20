@@ -1,5 +1,6 @@
 package com.wangshanhai.guard.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.wangshanhai.guard.config.PasswdGuardConfig;
 import com.wangshanhai.guard.utils.Logger;
 import org.springframework.util.StringUtils;
@@ -59,40 +60,91 @@ public class PasswdService {
      * @return
      */
     public boolean checkPasswd(String sourcePasswd){
-         boolean checkResult=true;
-         if(sourcePasswd.length()<passwdConfig.getMinLength()){
-             Logger.info("[Passwd-check-alert]-最小长度应为:{}",passwdConfig.getMinLength());
-             checkResult=false;
+         if(passwdConfig.getMode()==1){
+             boolean checkResult=true;
+             if(sourcePasswd.length()<passwdConfig.getMinLength()){
+                 Logger.info("[Passwd-check-alert]-最小长度应为:{}",passwdConfig.getMinLength());
+                 checkResult=false;
+             }
+             if(sourcePasswd.length()>passwdConfig.getMaxLength()){
+                 Logger.info("[Passwd-check-alert]-最大长度应为:{}",passwdConfig.getMaxLength());
+                 checkResult=false;
+             }
+             if(passwdConfig.getCharacterExist()&&!(sourcePasswd.matches(REG_LOWERCASE)&&sourcePasswd.matches(REG_UPPERCASE))){
+                 Logger.info("[Passwd-check-alert]-必须包含大小写字母");
+                 checkResult=false;
+             }
+             if(passwdConfig.getNumberExist()&&!(sourcePasswd.matches(REG_NUMBER))){
+                 Logger.info("[Passwd-check-alert]-必须包含数字");
+                 checkResult=false;
+             }
+             if(passwdConfig.getSymbolExist()){
+                 if(StrUtil.isBlank(passwdConfig.getSymbolReg())){
+                     if(!(sourcePasswd.matches(REG_SYMBOL))){
+                         Logger.info("[Passwd-check-alert]-必须包含特殊字符");
+                         checkResult=false;
+                     }
+                 }else{
+                     if(!(sourcePasswd.matches(passwdConfig.getSymbolReg()))){
+                         Logger.info("[Passwd-check-alert]-必须包含特殊字符");
+                         checkResult=false;
+                     }
+                 }
+
+             }
+             if(passwdConfig.getKeyboardNotExist()&&isKeyBoardContinuousChar(sourcePasswd)){
+                 Logger.info("[Passwd-check-alert]-不能包含键盘连续字符");
+                 checkResult=false;
+             }
+             if(passwdConfig.getAllSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getAllSameNum(),1)){
+                 Logger.info("[Passwd-check-alert]-不能包含{}个相同字符",passwdConfig.getAllSameNum());
+                 checkResult=false;
+             }
+             if(passwdConfig.getSeqSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getSeqSameNum(),2)){
+                 Logger.info("[Passwd-check-alert]-不能包含{}个连续字符",passwdConfig.getSeqSameNum());
+                 checkResult=false;
+             }
+             return checkResult;
          }
-         if(sourcePasswd.length()>passwdConfig.getMaxLength()){
-            Logger.info("[Passwd-check-alert]-最大长度应为:{}",passwdConfig.getMaxLength());
-            checkResult=false;
-         }
-         if(passwdConfig.getCharacterExist()&&!(sourcePasswd.matches(REG_LOWERCASE)&&sourcePasswd.matches(REG_UPPERCASE))){
-             Logger.info("[Passwd-check-alert]-必须包含大小写字母");
-             checkResult=false;
-         }
-         if(passwdConfig.getNumberExist()&&!(sourcePasswd.matches(REG_NUMBER))){
-            Logger.info("[Passwd-check-alert]-必须包含数字");
-            checkResult=false;
-         }
-        if(passwdConfig.getSymbolExist()&&!(sourcePasswd.matches(REG_SYMBOL))){
-            Logger.info("[Passwd-check-alert]-必须包含特殊字符");
-            checkResult=false;
+         return getWeight(sourcePasswd)>=passwdConfig.getMinWeight();
+    }
+
+    public  Integer getWeight(String sourcePasswd){
+        Integer weight=0;
+        if(sourcePasswd.length()>=passwdConfig.getMinLength()){
+            weight++;
         }
-        if(passwdConfig.getKeyboardNotExist()&&isKeyBoardContinuousChar(sourcePasswd)){
-            Logger.info("[Passwd-check-alert]-不能包含键盘连续字符");
-            checkResult=false;
+        if(sourcePasswd.length()<=passwdConfig.getMaxLength()){
+            weight++;
         }
-        if(passwdConfig.getAllSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getAllSameNum(),1)){
-            Logger.info("[Passwd-check-alert]-不能包含{}个相同字符",passwdConfig.getAllSameNum());
-            checkResult=false;
+        if(passwdConfig.getCharacterExist()&&sourcePasswd.matches(REG_LOWERCASE)&&sourcePasswd.matches(REG_UPPERCASE)){
+            weight++;
         }
-        if(passwdConfig.getSeqSameNotExist()&&isContinuousChar(sourcePasswd,passwdConfig.getSeqSameNum(),2)){
-            Logger.info("[Passwd-check-alert]-不能包含{}个连续字符",passwdConfig.getSeqSameNum());
-            checkResult=false;
+        if(passwdConfig.getNumberExist()&&sourcePasswd.matches(REG_NUMBER)){
+            weight++;
         }
-        return checkResult;
+        if(passwdConfig.getSymbolExist()){
+            if(StrUtil.isBlank(passwdConfig.getSymbolReg())){
+                if(sourcePasswd.matches(REG_SYMBOL)){
+                    weight++;
+                }
+            }else{
+                if(sourcePasswd.matches(passwdConfig.getSymbolReg())){
+                    weight++;
+                }
+            }
+            weight++;
+        }
+        if(passwdConfig.getKeyboardNotExist()&&!isKeyBoardContinuousChar(sourcePasswd)){
+            weight++;
+        }
+        if(passwdConfig.getAllSameNotExist()&&!isContinuousChar(sourcePasswd,passwdConfig.getAllSameNum(),1)){
+            weight++;
+        }
+        if(passwdConfig.getSeqSameNotExist()&&!isContinuousChar(sourcePasswd,passwdConfig.getSeqSameNum(),2)){
+            weight++;
+        }
+        return weight;
     }
     /**
      * 是否包含3个及以上键盘连续字符

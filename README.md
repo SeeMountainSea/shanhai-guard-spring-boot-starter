@@ -14,18 +14,14 @@
     <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SeeMountainSea/shanhai-guard-spring-boot-starter?color=534BAE"/></a>
   </p>
 </div>
-山海Guard安全组件能力
+> 1. 支持文件上传安全检测 （支持全局校验、单个方法校验、自定义校验、ZIP扫描校验等多种策略）
+> 2. 支持数据字段级加密与脱敏（支持自行扩展实现相关算法，如对接密码机或加密服务）
+> 3. 支持数据字段级变更数据审计
+> 4. 支持SQL注入&XSS注入安全检测
+> 5. 支持密码复杂度检验 （支持数字、大小写字母、键盘排序、长度、相同字符、连续字符等多种策略）
+> 6. 支持SpringBoot POST请求报文加密、响应报文加密
+> 7. 支持SpringBoot 响应报文进行字段级数据脱敏（支持自行实现脱敏算法）
+> 8. 支持对SpringBoot配置文件任意参数进行参数加密（支持自行扩展加密算法）
+> 9. 支持对全量参数进行敏感词检查与过滤
 
-| 组件名称               | 组件使用说明                                                 | 备注                                                       |
-| ---------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| 文件安全检测           | https://seemountainsea.github.io/guard/#_3-1-文件上传检测    | 支持对单个文件或压缩包进行文件安全细检测                   |
-| 密码复杂度检测         | https://seemountainsea.github.io/guard/#_3-2-密码复杂度检测  | 配置化高强度密码要求                                       |
-| sql&xss注入检测        | https://seemountainsea.github.io/guard/#_3-3-sql-xss注入检测 | 拦截常见注入风险                                           |
-| 配置文件参数加密       | https://seemountainsea.github.io/guard/#_3-6-springboot配置文件参数加密 | 支持自定义解密算法                                         |
-| 响应报文数据脱敏       | https://seemountainsea.github.io/guard/#_3-8基于序列化的响应报文数据脱敏 | 基于规则自行扩展                                           |
-| 字段级加解密与数据脱敏 | https://seemountainsea.github.io/guard/#_3-7-基于mybatis-plus进行字段级加解密与数据脱敏 | 基于mybatis-plus，也可以使用官方的，加密算法支持自定义扩展 |
-| 请求报文加密           | https://seemountainsea.github.io/guard/#_3-5-requestbody-通用解码组件 | 支持批量加密和单个加密，自行实现加密算法                   |
-| 响应报文加密           | https://seemountainsea.github.io/guard/#_3-9通用响应报文编码组件 | 支持批量加密和单个加密，自行实现加密算法                   |
-| 敏感词检测过滤         | https://seemountainsea.github.io/guard/#_3-10-敏感词检测过滤组件 | 支持对请求参数进行敏感词检测                               |
-
-更多说明：https://seemountainsea.github.io/guard/
+使用说明：https://seemountainsea.github.io/guard/

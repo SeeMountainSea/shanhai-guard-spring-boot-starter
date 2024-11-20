@@ -41,6 +41,9 @@ shanhai:
     trace-log: true
     slow-filter: true
     slow-time: 1000
+  dataaudit:
+    enable: true
+    ignored-table-columns: t_user.user_desc
   fileguard:
     enable: true
     pathPatterns:
@@ -57,10 +60,10 @@ shanhai:
     limit-exist: false
     query-limit: 20000
   decodebody:
-    enable: true
+    enable: false
     mode: 1
   respguard:
-    enable: true
+    enable: false
     trace-log: true
   encodebody:
     enable: true

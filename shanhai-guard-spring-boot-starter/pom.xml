@@ -5,20 +5,21 @@
     <parent>
         <groupId>com.wangshanhai.guard</groupId>
         <artifactId>shanhai-guard-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>shanhai-guard-spring-boot-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <name>shanhai-guard-spring-boot-starter</name>
     <description>山海Guard - 一款基于SpringBoot的安全防护组件，为生产力保驾护航！</description>
     <properties>
         <mybatis.version>1.3.2</mybatis.version>
         <commonio.version>2.9.0</commonio.version>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <bcprov.version>1.69</bcprov.version>
-        <hutool.version>5.8.19</hutool.version>
+        <hutool.version>5.8.33</hutool.version>
         <fastjson2.version>2.0.49</fastjson2.version>
+        <jsqlparser.version>4.4</jsqlparser.version>
     </properties>
     <dependencies>
         <dependency>
@@ -56,7 +57,12 @@
             <version>${mybatis-plus.version}</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

@@ -1,11 +1,19 @@
 package com.wangshanhai.guard.config;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 序列化编码配置
  * @author Shmily
  */
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ConfigurationProperties(prefix = "shanhai.respguard")
 public class RespGuardConfig {
     /**
@@ -17,19 +25,4 @@ public class RespGuardConfig {
      */
     private boolean traceLog=false;
 
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    public boolean isTraceLog() {
-        return traceLog;
-    }
-
-    public void setTraceLog(boolean traceLog) {
-        this.traceLog = traceLog;
-    }
 }
