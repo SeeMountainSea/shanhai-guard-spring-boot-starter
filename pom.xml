@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
     <name>shanhai-guard-parent</name>
     <description>山海Guard - 一款基于SpringBoot的安全防护组件，为生产力保驾护航！。</description>
+    <url>https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter</url>
     <properties>
         <lombok.version>1.18.28</lombok.version>
         <bcprov.version>1.69</bcprov.version>
