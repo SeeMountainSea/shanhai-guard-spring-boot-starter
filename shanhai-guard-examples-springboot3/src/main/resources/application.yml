@@ -1,0 +1,81 @@
+server:
+  port: 18088
+  servlet:
+    context-path: /shanhai
+
+spring:
+  jackson:
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/shanhai_guard
+    username: root
+    password: root
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.wangshanhai.examples.domain
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+shanhai:
+  passwdguard:
+    enable: true
+    minLength: 4
+    maxLength: 20
+    characterExist: true
+    numberExist: true
+    symbolExist: true
+    keyboardNotExist: true
+    allSameNotExist: true
+    allSameNum: 3
+    seqSameNotExist: true
+    seqSameNum: 4
+  dataguard:
+    enable: true
+    trace-log: true
+    slow-filter: true
+    slow-time: 1000
+  dataaudit:
+    enable: true
+    ignored-table-columns: t_user.user_desc
+  fileguard:
+    enable: true
+    pathPatterns:
+      - '/**'
+    suffix: jpg,gif,png,ico,bmp,jpeg
+    logTarce: true
+  webguard:
+    enable: true
+    path-patterns:
+      - '/*'
+  mysqlguard:
+    enable: false
+    where-exist: false
+    limit-exist: false
+    query-limit: 20000
+  decodebody:
+    enable: false
+    mode: 1
+  respguard:
+    enable: false
+    trace-log: true
+  encodebody:
+    enable: true
+    mode: 1
+  sensitivewords:
+    enable: true
+    enableResp: true
+    sensitive-filter-mode: 1
+    path-patterns:
+      - '/*'
+    sensitive-words: "今天,今天很好,今天真烦"
+    task-enable: true
+    task-inteval-period: 60
+app:
+  version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
