@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
 /**
  * 自定义Body解码规则
  * @author Shmily
@@ -32,4 +34,8 @@ public class DecodeBodyConfig {
      * 敏感词过滤模式 （1:自动脱敏存储 2:拒绝执行）
      */
     private Integer sensitiveFilterMode=1;
+    /**
+     * 全量模式时忽略解密的url
+     */
+    private List<String> excludePathPatterns;
 }

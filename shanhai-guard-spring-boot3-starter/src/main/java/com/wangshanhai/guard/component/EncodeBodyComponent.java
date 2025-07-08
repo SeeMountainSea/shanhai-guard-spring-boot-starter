@@ -7,6 +7,7 @@ import com.wangshanhai.guard.config.EncodeBodyConfig;
 import com.wangshanhai.guard.service.EncodeBodyService;
 import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.util.List;
 
 /**
  *  自定义Body编码组件
@@ -43,6 +48,14 @@ public class EncodeBodyComponent implements ResponseBodyAdvice {
         }
         if(encodeBodyConfig.getMode()==2&&!methodParameter.hasMethodAnnotation(EncodeBody.class)){
             return false;
+        }
+        List<String> excludePathPatterns=encodeBodyConfig.getExcludePathPatterns();
+        if(excludePathPatterns!=null && !excludePathPatterns.isEmpty()){
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String url = request.getRequestURI();
+            if(excludePathPatterns.contains(url)){
+                return false;
+            }
         }
         return true;
     }

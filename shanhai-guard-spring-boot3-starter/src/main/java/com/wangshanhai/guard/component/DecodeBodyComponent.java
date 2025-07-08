@@ -8,6 +8,7 @@ import com.wangshanhai.guard.sensitive.Finder;
 import com.wangshanhai.guard.service.DecodeBodyService;
 import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,12 +19,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,6 +55,14 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
         }
         if(decodeBodyConfig.getMode()==2&&!methodParameter.hasMethodAnnotation(DecodeBody.class)){
             return false;
+        }
+        List<String> excludePathPatterns=decodeBodyConfig.getExcludePathPatterns();
+        if(excludePathPatterns!=null && !excludePathPatterns.isEmpty()){
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String url = request.getRequestURI();
+            if(excludePathPatterns.contains(url)){
+                return false;
+            }
         }
         return true;
     }
