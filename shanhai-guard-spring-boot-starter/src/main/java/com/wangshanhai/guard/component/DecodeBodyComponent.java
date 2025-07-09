@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -59,10 +60,8 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
         List<String> excludePathPatterns=decodeBodyConfig.getExcludePathPatterns();
         if(excludePathPatterns!=null && !excludePathPatterns.isEmpty()){
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String url = request.getRequestURI();
-            if(excludePathPatterns.contains(url)){
-                return false;
-            }
+            Optional<String> t= excludePathPatterns.stream().filter(excludePathPattern -> request.getRequestURI().startsWith(excludePathPattern.replace("/**",""))).findFirst();
+            return !t.isPresent();
         }
         return true;
     }

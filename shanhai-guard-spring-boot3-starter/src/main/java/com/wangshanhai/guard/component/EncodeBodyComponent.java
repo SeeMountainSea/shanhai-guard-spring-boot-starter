@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  *  自定义Body编码组件
@@ -52,10 +53,8 @@ public class EncodeBodyComponent implements ResponseBodyAdvice {
         List<String> excludePathPatterns=encodeBodyConfig.getExcludePathPatterns();
         if(excludePathPatterns!=null && !excludePathPatterns.isEmpty()){
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String url = request.getRequestURI();
-            if(excludePathPatterns.contains(url)){
-                return false;
-            }
+            Optional<String> t= excludePathPatterns.stream().filter(excludePathPattern -> request.getRequestURI().startsWith(excludePathPattern.replace("/**",""))).findFirst();
+            return !t.isPresent();
         }
         return true;
     }

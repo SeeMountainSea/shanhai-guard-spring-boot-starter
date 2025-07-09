@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.wangshanhai.guard</groupId>
         <artifactId>shanhai-guard-parent</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>shanhai-guard-spring-boot3-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>shanhai-guard-spring-boot3-starter</name>
     <url>https://github.com/SeeMountainSea/shanhai-log-spring-boot-starter</url>
     <description>山海Guard - 一款基于SpringBoot3的安全防护组件，为生产力保驾护航！</description>
@@ -23,6 +23,7 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <jsqlparser.version>4.4</jsqlparser.version>
         <jsr305.version>3.0.2</jsr305.version>
+        <commons-codec.version>1.15</commons-codec.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -41,6 +42,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
