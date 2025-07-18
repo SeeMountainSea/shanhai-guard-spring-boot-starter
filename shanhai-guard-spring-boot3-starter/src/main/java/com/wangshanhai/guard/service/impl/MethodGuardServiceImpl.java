@@ -35,6 +35,7 @@ public class MethodGuardServiceImpl implements MethodGuardService {
                         String original = (String) field.get(arg);
                         field.set(arg, methodFieldGuardService.encrypt(original, methodGuardField));
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_ENCRYPT_ERROR,"方法级参数加密失败");
                     }
                 });
@@ -56,6 +57,7 @@ public class MethodGuardServiceImpl implements MethodGuardService {
                         String original = (String) field.get(arg);
                         field.set(arg, methodFieldGuardService.decrypt(original, methodGuardField));
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_DECRYPT_ERROR,"方法级参数解密失败");
                     }
                 });
