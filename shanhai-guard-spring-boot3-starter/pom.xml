@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>shanhai-guard-spring-boot3-starter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>shanhai-guard-spring-boot3-starter</name>
     <url>https://github.com/SeeMountainSea/shanhai-log-spring-boot-starter</url>
     <description>山海Guard - 一款基于SpringBoot3的安全防护组件，为生产力保驾护航！</description>

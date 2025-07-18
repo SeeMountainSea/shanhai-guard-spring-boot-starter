@@ -17,8 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -42,6 +47,12 @@ public class RespBodySensitiveComponent implements ResponseBodyAdvice {
         //判断是否对当前参数进行处理
         if(methodParameter.hasMethodAnnotation(SensitiveBodyIngore.class)){
             return false;
+        }
+        List<String> excludePathPatterns=wordsSensitiveConfig.getRespPathPatterns();
+        if(excludePathPatterns!=null && !excludePathPatterns.isEmpty()){
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            Optional<String> t= excludePathPatterns.stream().filter(excludePathPattern -> request.getRequestURI().startsWith(excludePathPattern.replace("/**",""))).findFirst();
+            return !t.isPresent();
         }
         return true;
     }

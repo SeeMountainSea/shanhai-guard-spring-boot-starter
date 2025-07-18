@@ -1,10 +1,8 @@
 package com.wangshanhai.guard.component;
 
-import cn.hutool.json.JSONUtil;
 import com.wangshanhai.guard.annotation.DecodeBody;
 import com.wangshanhai.guard.annotation.DecodeBodyIgnore;
 import com.wangshanhai.guard.config.DecodeBodyConfig;
-import com.wangshanhai.guard.sensitive.Finder;
 import com.wangshanhai.guard.service.DecodeBodyService;
 import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
@@ -29,7 +27,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * 自定义Body解码规则
@@ -75,16 +72,6 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
                 sourceContent=decodeBodyService.decodeRequestBody(source);
             }else {
                 sourceContent=decodeBodyService.decodeRequestBody( parameter.getMethodAnnotation(DecodeBody.class).ruleId(),source);
-            }
-            if(decodeBodyConfig.getEnableSensitive()){
-                Set<String> sensitiveWords=Finder.find(sourceContent);
-                if(sensitiveWords!=null&&sensitiveWords.size()>0){
-                    if(decodeBodyConfig.getSensitiveFilterMode()==1){
-                        sourceContent=Finder.replace(sourceContent, '*');
-                    }else{
-                        throw  new HttpBizException("80002","请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
-                    }
-                }
             }
             InputStream decodeInputStream=IOUtils.toInputStream(sourceContent, StandardCharsets.UTF_8.name());
             HttpInputMessage httpInputMessage=new HttpInputMessage() {

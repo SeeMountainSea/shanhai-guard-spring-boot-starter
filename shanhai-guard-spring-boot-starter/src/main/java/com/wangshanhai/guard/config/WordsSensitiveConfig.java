@@ -29,9 +29,13 @@ public class WordsSensitiveConfig {
      */
     private Boolean enableResp=false;
     /**
-     * 拦截范围
+     * 请求参数拦截范围
      */
-    private List<String> pathPatterns=new ArrayList<>();
+    private List<String> reqPathPatterns=new ArrayList<>();
+    /**
+     * 响应参数拦截范围
+     */
+    private List<String> respPathPatterns=new ArrayList<>();
     /**
      * 敏感词过滤模式 （1:自动脱敏放行 2:拒绝执行）
      */

@@ -27,14 +27,6 @@ public class DecodeBodyConfig {
      */
     private Integer mode=1;
     /**
-     * 是否启用敏感词过滤
-     */
-    private Boolean enableSensitive=false;
-    /**
-     * 敏感词过滤模式 （1:自动脱敏存储 2:拒绝执行）
-     */
-    private Integer sensitiveFilterMode=1;
-    /**
      * 全量模式时忽略解密的url
      */
     private List<String> excludePathPatterns;
