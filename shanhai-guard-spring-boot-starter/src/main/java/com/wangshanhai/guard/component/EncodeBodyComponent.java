@@ -5,7 +5,8 @@ import com.wangshanhai.guard.annotation.EncodeBody;
 import com.wangshanhai.guard.annotation.EncodeBodyIgnore;
 import com.wangshanhai.guard.config.EncodeBodyConfig;
 import com.wangshanhai.guard.service.EncodeBodyService;
-import com.wangshanhai.guard.utils.HttpBizException;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import com.wangshanhai.guard.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -72,7 +73,7 @@ public class EncodeBodyComponent implements ResponseBodyAdvice {
             return respBody;
         }catch (Exception e){
             Logger.error("[Resp-Body-EncodeError]-msg:{}",e.getMessage());
-            throw  new HttpBizException("80002","响应参数解析异常");
+            throw  new ShanHaiGuardException(ShanHaiGuardErrorCode.ENCODE_BODY_ERROR,"响应参数解析异常");
         }
     }
 }

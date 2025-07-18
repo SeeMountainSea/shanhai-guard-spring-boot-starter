@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HttpBizException extends RuntimeException {
+public class ShanHaiGuardException extends RuntimeException {
     private String code="500";
     private String message;
 
-    public HttpBizException(String message) {
+    public ShanHaiGuardException(String message) {
         this.message = message;
     }
 }

@@ -5,7 +5,8 @@ import com.wangshanhai.guard.annotation.SensitiveBodyIngore;
 import com.wangshanhai.guard.annotation.SensitiveTextBody;
 import com.wangshanhai.guard.config.WordsSensitiveConfig;
 import com.wangshanhai.guard.sensitive.Finder;
-import com.wangshanhai.guard.utils.HttpBizException;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import com.wangshanhai.guard.utils.JsonUnescapeUtil;
 import com.wangshanhai.guard.utils.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class RespBodySensitiveComponent implements ResponseBodyAdvice {
                 Logger.error("[ShanhaiGuard-WordsSensitive-Scan-Alert],wordsSensitive:{}",sensitiveWords);
                 return Finder.replace(source, '*');
             }else{
-                throw  new HttpBizException("80002","请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
+                throw  new ShanHaiGuardException(ShanHaiGuardErrorCode.WORDS_SENSITIVE_LIMIT,"请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
             }
         }
         return source;

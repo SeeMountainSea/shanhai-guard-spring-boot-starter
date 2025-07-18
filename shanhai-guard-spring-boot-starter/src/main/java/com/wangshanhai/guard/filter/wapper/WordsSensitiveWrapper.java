@@ -3,8 +3,9 @@ package com.wangshanhai.guard.filter.wapper;
 import cn.hutool.json.JSONUtil;
 import com.wangshanhai.guard.config.WordsSensitiveConfig;
 import com.wangshanhai.guard.sensitive.Finder;
-import com.wangshanhai.guard.utils.HttpBizException;
 import com.wangshanhai.guard.utils.Logger;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
@@ -125,7 +126,7 @@ public class WordsSensitiveWrapper extends HttpServletRequestWrapper {
                 Logger.error("[ShanhaiGuard-WordsSensitive-Scan-Alert]-url:{},wordsSensitive:{}",this.currentUrl,sensitiveWords);
                 return Finder.replace(source, '*');
             }else{
-                throw  new HttpBizException("80002","请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
+                throw  new ShanHaiGuardException(ShanHaiGuardErrorCode.WORDS_SENSITIVE_LIMIT,"请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
             }
         }
         return source;

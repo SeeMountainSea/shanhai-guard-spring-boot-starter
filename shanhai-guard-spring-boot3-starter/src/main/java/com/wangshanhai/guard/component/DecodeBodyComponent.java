@@ -4,7 +4,8 @@ import com.wangshanhai.guard.annotation.DecodeBody;
 import com.wangshanhai.guard.annotation.DecodeBodyIgnore;
 import com.wangshanhai.guard.config.DecodeBodyConfig;
 import com.wangshanhai.guard.service.DecodeBodyService;
-import com.wangshanhai.guard.utils.HttpBizException;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import com.wangshanhai.guard.utils.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
@@ -87,7 +88,7 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
             return super.beforeBodyRead(httpInputMessage, parameter, targetType, converterType);
         }catch (Exception e){
             Logger.error("[Request-Body-DecodeError]-msg:{}",e.getMessage());
-            throw  new HttpBizException("80001","请求参数解析异常");
+            throw  new ShanHaiGuardException(ShanHaiGuardErrorCode.DECODE_BODY_ERROR,"请求参数解析异常");
         }
     }
 }

@@ -4,7 +4,8 @@ import com.wangshanhai.guard.annotation.FileGuard;
 import com.wangshanhai.guard.annotation.FileType;
 import com.wangshanhai.guard.config.FileGuardConfig;
 import com.wangshanhai.guard.service.FileGuardRuleDefService;
-import com.wangshanhai.guard.utils.HttpBizException;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import com.wangshanhai.guard.utils.Logger;
 import com.wangshanhai.guard.utils.ZipUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ public class FileScanInterceptor implements HandlerInterceptor {
                             boolean fileResp= checkGuard(multipartFile,fileGuard);
                             if(!fileResp){
                                 Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
-                                throw new HttpBizException(fileGuard.message());
+                                throw new ShanHaiGuardException(ShanHaiGuardErrorCode.FILE_UPLOAD_ALERT,fileGuard.message());
                             }
                         }
                         if(fileGuardConfig.getZipScan()){
@@ -89,13 +90,13 @@ public class FileScanInterceptor implements HandlerInterceptor {
                                 }
                                 if(!zipSafe){
                                     Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
-                                    throw new HttpBizException("ZIP压缩包内包含不允许上传的文件类型！");
+                                    throw new ShanHaiGuardException(ShanHaiGuardErrorCode.FILE_UPLOAD_ALERT,"ZIP压缩包内包含不允许上传的文件类型！");
                                 }
                             }
                         }
                     }else{
                         Logger.error("[file-upload-alert]-url:{},file:{}",request.getRequestURI(),filename);
-                        throw new HttpBizException("不允许上传该类型文件！");
+                        throw new ShanHaiGuardException(ShanHaiGuardErrorCode.FILE_UPLOAD_ALERT,"不允许上传该类型文件！");
                     }
                 }
             }
@@ -172,7 +173,7 @@ public class FileScanInterceptor implements HandlerInterceptor {
             is.read(fileHeader);
             return byteArray2Hex(fileHeader);
         } catch (IOException e) {
-            throw new HttpBizException("文件识别异常!");
+            throw new ShanHaiGuardException(ShanHaiGuardErrorCode.FILE_UPLOAD_ALERT,"文件识别异常!");
         } finally {
             IOUtils.closeQuietly();
         }

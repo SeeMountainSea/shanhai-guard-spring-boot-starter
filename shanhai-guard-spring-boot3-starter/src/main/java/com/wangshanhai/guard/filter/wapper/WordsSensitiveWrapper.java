@@ -3,7 +3,7 @@ package com.wangshanhai.guard.filter.wapper;
 import cn.hutool.json.JSONUtil;
 import com.wangshanhai.guard.config.WordsSensitiveConfig;
 import com.wangshanhai.guard.sensitive.Finder;
-import com.wangshanhai.guard.utils.HttpBizException;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import com.wangshanhai.guard.utils.Logger;
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -125,7 +125,7 @@ public class WordsSensitiveWrapper extends HttpServletRequestWrapper {
                 Logger.error("[ShanhaiGuard-WordsSensitive-Scan-Alert]-url:{},wordsSensitive:{}",this.currentUrl,sensitiveWords);
                 return Finder.replace(source, '*');
             }else{
-                throw  new HttpBizException("80002","请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
+                throw  new ShanHaiGuardException("80002","请求包含敏感词："+ JSONUtil.toJsonStr(sensitiveWords));
             }
         }
         return source;
