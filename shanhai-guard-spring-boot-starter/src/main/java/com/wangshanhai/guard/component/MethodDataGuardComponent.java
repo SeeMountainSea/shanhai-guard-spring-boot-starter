@@ -2,10 +2,11 @@ package com.wangshanhai.guard.component;
 
 import com.wangshanhai.guard.annotation.MethodEncryptParam;
 import com.wangshanhai.guard.annotation.MethodEncryptRule;
+import com.wangshanhai.guard.annotation.MethodGuardField;
 import com.wangshanhai.guard.service.MethodFieldGuardService;
-import com.wangshanhai.guard.service.MethodGuardService;
 import com.wangshanhai.guard.service.impl.DefaultMethodFieldGuardService;
-import com.wangshanhai.guard.service.impl.MethodGuardServiceImpl;
+import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
+import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,8 +39,6 @@ import java.util.stream.Collectors;
 public class MethodDataGuardComponent {
 
     @Autowired
-    private MethodGuardService methodGuardService;
-    @Autowired(required = false)
     private MethodFieldGuardService methodFieldGuardService;
     @Pointcut("@annotation(com.wangshanhai.guard.annotation.MethodEncryptParam)")
     public void pointCutEncryptParam() {
@@ -61,10 +61,10 @@ public class MethodDataGuardComponent {
                 if(methodEncryptRule.targetIndex()==i){
                     switch (methodEncryptRule.targetType()){
                         case 1:
-                            args[i] = methodGuardService.encryptFieldsFromDto(args[i]);
+                            args[i] = this.encryptFieldsFromDto(args[i]);
                             break;
                         case 2:
-                            args[i] = methodGuardService.encryptFieldsFromRule(args[i],methodEncryptRule.ruleId());
+                            args[i] = this.encryptFieldsFromRule(args[i],parameters[i].getName(),methodEncryptRule.ruleId());
                             break;
                     }
                 }
@@ -80,22 +80,60 @@ public class MethodDataGuardComponent {
     public Object decryptResult(JoinPoint point, Object result) {
         if(result instanceof List){
             return ((List<?>)result).stream()
-                    .map(methodGuardService::decryptFields)
+                    .map(this::decryptFields)
                     .collect(Collectors.toList());
         }
-        return methodGuardService.decryptFields(result);
+        return decryptFields(result);
     }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public MethodGuardService generateMethodGuardService() {
-        return new MethodGuardServiceImpl(methodFieldGuardService);
-    };
 
     @Bean
     @ConditionalOnMissingBean
     public MethodFieldGuardService generateDefaultMethodFieldGuardService() {
         return new DefaultMethodFieldGuardService();
     };
+
+    private Object encryptFieldsFromDto(Object arg) {
+        if (arg == null) {
+            return null;
+        }
+        // 反射处理对象字段加密
+        Arrays.stream(arg.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(MethodGuardField.class))
+                .forEach(field -> {
+                    try {
+                        MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
+                        field.setAccessible(true);
+                        field.set(arg, methodFieldGuardService.encrypt(field.get(arg),field.getName(), methodGuardField));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_ENCRYPT_ERROR,"方法级参数加密失败");
+                    }
+                });
+        return arg;
+    }
+
+    private Object encryptFieldsFromRule(Object arg,String fieldName, String ruleId) {
+        return methodFieldGuardService.encrypt(arg,fieldName,ruleId);
+    }
+
+    private Object decryptFields(Object arg) {
+        if (arg == null) {
+            return null;
+        }
+        // 反射处理对象字段解密
+        Arrays.stream(arg.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(MethodGuardField.class))
+                .forEach(field -> {
+                    try {
+                        MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
+                        field.setAccessible(true);
+                        String original = (String) field.get(arg);
+                        field.set(arg, methodFieldGuardService.decrypt(original, methodGuardField));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_DECRYPT_ERROR,"方法级参数解密失败");
+                    }
+                });
+        return arg;
+    }
 }

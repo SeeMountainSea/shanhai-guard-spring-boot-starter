@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * @author Fly.Sky
  */
 @Inherited
-@Target({ElementType.PARAMETER})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodGuardField {
     /**

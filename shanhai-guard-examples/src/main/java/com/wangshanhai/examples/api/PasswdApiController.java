@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/api")
 public class PasswdApiController {
-    @Autowired
+    @Autowired(required = false)
     private PasswdService passwdService;
 
     /**

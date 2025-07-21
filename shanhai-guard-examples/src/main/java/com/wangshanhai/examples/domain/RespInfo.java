@@ -1,5 +1,6 @@
 package com.wangshanhai.examples.domain;
 
+import com.wangshanhai.guard.annotation.MethodGuardField;
 import com.wangshanhai.guard.annotation.RespFieldGuard;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class RespInfo {
     @RespFieldGuard(ruleId = "text")
     private String text;
+    @MethodGuardField(encryptRuleId = "aes",decryptRuleId = "aes")
     private String msg;
     private Integer code;
 }

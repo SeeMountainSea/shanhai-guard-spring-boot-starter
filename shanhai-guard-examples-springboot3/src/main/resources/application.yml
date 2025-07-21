@@ -25,7 +25,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
 shanhai:
   passwdguard:
-    enable: true
+    enable: false
     minLength: 4
     maxLength: 20
     characterExist: true
@@ -37,21 +37,21 @@ shanhai:
     seqSameNotExist: true
     seqSameNum: 4
   dataguard:
-    enable: true
+    enable: false
     trace-log: true
     slow-filter: true
     slow-time: 1000
   dataaudit:
-    enable: true
+    enable: false
     ignored-table-columns: t_user.user_desc
   fileguard:
-    enable: true
+    enable: false
     pathPatterns:
       - '/**'
     suffix: jpg,gif,png,ico,bmp,jpeg
     logTarce: true
   webguard:
-    enable: true
+    enable: false
     path-patterns:
       - '/*'
   mysqlguard:
@@ -69,13 +69,16 @@ shanhai:
     enable: true
     mode: 1
   sensitivewords:
-    enable: true
-    enableResp: true
+    enable: false
+    enableReq: false
+    enableResp: false
     sensitive-filter-mode: 1
     path-patterns:
       - '/*'
     sensitive-words: "今天,今天很好,今天真烦"
     task-enable: true
     task-inteval-period: 60
+  methoddataguard:
+    enable: true
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='

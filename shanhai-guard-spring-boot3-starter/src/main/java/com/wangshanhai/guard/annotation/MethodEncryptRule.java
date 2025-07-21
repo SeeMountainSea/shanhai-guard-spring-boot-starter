@@ -1,8 +1,13 @@
 package com.wangshanhai.guard.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * 加密方法加密定义
  * @author Fly.Sky
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface MethodEncryptRule {
     /**
      * 目标对象索引

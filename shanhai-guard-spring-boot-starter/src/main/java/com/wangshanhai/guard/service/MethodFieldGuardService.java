@@ -11,16 +11,18 @@ public interface MethodFieldGuardService {
      * 执行字段加密
      * @param original 原始数值
      * @param methodGuardField 字段注解
+     * @param fieldName 字段名
      * @return
      */
-    Object encrypt(Object original, MethodGuardField methodGuardField);
+    Object encrypt(Object original,String fieldName, MethodGuardField methodGuardField);
     /**
      * 执行对象加密（根据规则ID）
      * @param original 原始数值
      * @param ruleId  规则ID
+     * @param fieldName 字段名
      * @return
      */
-    Object encrypt(Object original, String ruleId);
+    Object encrypt(Object original,String fieldName, String ruleId);
     /**
      * 执行字段解密
      * @param original 原始数值

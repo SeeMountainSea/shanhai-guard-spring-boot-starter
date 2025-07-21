@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wangshanhai.guard.annotation.FieldDataGuard;
+import com.wangshanhai.guard.annotation.MethodGuardField;
 import com.wangshanhai.guard.annotation.ShanHaiDataGuard;
 import com.wangshanhai.guard.dataplug.DataExecModel;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class TUser implements Serializable {
     /**
      * name
      */
+    @MethodGuardField(encryptRuleId = "aes",decryptRuleId = "aes")
     private String name;
 
     /**
