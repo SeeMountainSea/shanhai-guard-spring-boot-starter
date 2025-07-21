@@ -3,10 +3,10 @@ package com.wangshanhai.guard.annotation;
 import java.lang.annotation.*;
 
 /**
- * 解密方法结果
+ * 保护结果参数
  * @author Fly.Sky
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MethodDecryptResult {
+public @interface MethodGuardResult {
 }

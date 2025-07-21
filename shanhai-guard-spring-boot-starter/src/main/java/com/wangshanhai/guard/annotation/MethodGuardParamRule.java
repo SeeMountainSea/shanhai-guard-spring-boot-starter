@@ -1,9 +1,9 @@
 package com.wangshanhai.guard.annotation;
 /**
- * 加密方法加密定义
+ * 保护方法参数规则定义
  * @author Fly.Sky
  */
-public @interface MethodEncryptRule {
+public @interface MethodGuardParamRule {
     /**
      * 目标对象索引
      */

@@ -3,7 +3,7 @@ package com.wangshanhai.guard.annotation;
 import java.lang.annotation.*;
 
 /**
- *  加密字段配置
+ *  保护规则配置
  * @author Fly.Sky
  */
 @Inherited
@@ -11,14 +11,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodGuardField {
     /**
-     * 加密字段规则
+     * 参数保护规则
      * @return
      */
-    String encryptRuleId() default "";
+    String paramGuardRuleId() default "";
 
     /**
-     * 解密字段规则
+     * 结果保护规则
      * @return
      */
-    String decryptRuleId() default "";
+    String resultGuardRuleId() default "";
 }

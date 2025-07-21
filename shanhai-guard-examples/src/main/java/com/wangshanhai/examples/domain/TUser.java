@@ -35,7 +35,7 @@ public class TUser implements Serializable {
     /**
      * name
      */
-    @MethodGuardField(encryptRuleId = "aes",decryptRuleId = "aes")
+    @MethodGuardField(paramGuardRuleId = "aes",resultGuardRuleId = "aes")
     private String name;
 
     /**

@@ -1,7 +1,7 @@
 package com.wangshanhai.guard.component;
 
-import com.wangshanhai.guard.annotation.MethodEncryptParam;
-import com.wangshanhai.guard.annotation.MethodEncryptRule;
+import com.wangshanhai.guard.annotation.MethodGuardParam;
+import com.wangshanhai.guard.annotation.MethodGuardParamRule;
 import com.wangshanhai.guard.annotation.MethodGuardField;
 import com.wangshanhai.guard.service.MethodFieldGuardService;
 import com.wangshanhai.guard.service.impl.DefaultMethodFieldGuardService;
@@ -40,7 +40,7 @@ public class MethodDataGuardComponent {
 
     @Autowired
     private MethodFieldGuardService methodFieldGuardService;
-    @Pointcut("@annotation(com.wangshanhai.guard.annotation.MethodEncryptParam)")
+    @Pointcut("@annotation(com.wangshanhai.guard.annotation.MethodGuardParam)")
     public void pointCutEncryptParam() {
 
     }
@@ -53,10 +53,10 @@ public class MethodDataGuardComponent {
         Object[] args = point.getArgs();
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
-        MethodEncryptParam encryptParam =method.getAnnotation(MethodEncryptParam.class);
+        MethodGuardParam encryptParam =method.getAnnotation(MethodGuardParam.class);
         Parameter[] parameters = method.getParameters();
         for(int j=0;j<encryptParam.rules().length;j++){
-            MethodEncryptRule methodEncryptRule=encryptParam.rules()[j];
+            MethodGuardParamRule methodEncryptRule=encryptParam.rules()[j];
             for(int i=0; i<parameters.length; i++){
                 if(methodEncryptRule.targetIndex()==i){
                     switch (methodEncryptRule.targetType()){
@@ -76,7 +76,7 @@ public class MethodDataGuardComponent {
     /**
      * 出参解密切点
      */
-    @AfterReturning(pointcut="@annotation(com.wangshanhai.guard.annotation.MethodDecryptResult)", returning="result")
+    @AfterReturning(pointcut="@annotation(com.wangshanhai.guard.annotation.MethodGuardResult)", returning="result")
     public Object decryptResult(JoinPoint point, Object result) {
         if(result instanceof List){
             return ((List<?>)result).stream()
@@ -127,8 +127,7 @@ public class MethodDataGuardComponent {
                     try {
                         MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
                         field.setAccessible(true);
-                        String original = (String) field.get(arg);
-                        field.set(arg, methodFieldGuardService.decrypt(original, methodGuardField));
+                        field.set(arg, methodFieldGuardService.decrypt(field.get(arg), methodGuardField));
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_DECRYPT_ERROR,"方法级参数解密失败");

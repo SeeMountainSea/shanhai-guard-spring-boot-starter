@@ -14,7 +14,7 @@ public interface MethodFieldGuardService {
      * @param fieldName 字段名
      * @return
      */
-    Object encrypt(Object original,String fieldName, MethodGuardField methodGuardField);
+   default Object encrypt(Object original,String fieldName, MethodGuardField methodGuardField){return original;};
     /**
      * 执行对象加密（根据规则ID）
      * @param original 原始数值
@@ -22,12 +22,12 @@ public interface MethodFieldGuardService {
      * @param fieldName 字段名
      * @return
      */
-    Object encrypt(Object original,String fieldName, String ruleId);
+   default Object encrypt(Object original,String fieldName, String ruleId){return original;};
     /**
      * 执行字段解密
      * @param original 原始数值
      * @param methodGuardField 字段注解
      * @return
      */
-    Object decrypt(Object original, MethodGuardField methodGuardField);
+    default Object decrypt(Object original, MethodGuardField methodGuardField){return original;};
 }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class RespInfo {
     @RespFieldGuard(ruleId = "text")
     private String text;
-    @MethodGuardField(encryptRuleId = "aes",decryptRuleId = "aes")
+    @MethodGuardField(paramGuardRuleId = "aes",resultGuardRuleId = "aes")
     private String msg;
     private Integer code;
 }

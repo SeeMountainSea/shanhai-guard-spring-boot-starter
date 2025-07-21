@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 加密方法参数
+ * 保护方法参数
  * @author Fly.Sky
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MethodEncryptParam {
+public @interface MethodGuardParam {
     /**
      * 加密规则
      */
-    MethodEncryptRule [] rules();
+    MethodGuardParamRule[] rules();
 }
