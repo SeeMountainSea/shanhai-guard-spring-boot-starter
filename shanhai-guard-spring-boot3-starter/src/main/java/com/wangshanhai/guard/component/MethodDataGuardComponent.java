@@ -1,8 +1,10 @@
 package com.wangshanhai.guard.component;
 
 import com.wangshanhai.guard.annotation.MethodEncryptParam;
+import com.wangshanhai.guard.annotation.MethodEncryptRule;
 import com.wangshanhai.guard.service.MethodFieldGuardService;
 import com.wangshanhai.guard.service.MethodGuardService;
+import com.wangshanhai.guard.service.impl.DefaultMethodFieldGuardService;
 import com.wangshanhai.guard.service.impl.MethodGuardServiceImpl;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -53,13 +55,20 @@ public class MethodDataGuardComponent {
         Method method = signature.getMethod();
         MethodEncryptParam encryptParam =method.getAnnotation(MethodEncryptParam.class);
         Parameter[] parameters = method.getParameters();
-        for(int i=0; i<parameters.length; i++){
-            for(int j=0;j<encryptParam.paramIndexes().length;j++){
-                if(encryptParam.paramIndexes()[j]==i){
-                    args[i] = methodGuardService.encryptFields(args[i]);
+        for(int j=0;j<encryptParam.rules().length;j++){
+            MethodEncryptRule methodEncryptRule=encryptParam.rules()[j];
+            for(int i=0; i<parameters.length; i++){
+                if(methodEncryptRule.targetIndex()==i){
+                    switch (methodEncryptRule.targetType()){
+                        case 1:
+                            args[i] = methodGuardService.encryptFieldsFromDto(args[i]);
+                            break;
+                        case 2:
+                            args[i] = methodGuardService.encryptFieldsFromRule(args[i],methodEncryptRule.ruleId());
+                            break;
+                    }
                 }
             }
-
         }
         return point.proceed(args);
     }
@@ -82,5 +91,11 @@ public class MethodDataGuardComponent {
     @ConditionalOnMissingBean
     public MethodGuardService generateMethodGuardService() {
         return new MethodGuardServiceImpl(methodFieldGuardService);
+    };
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MethodFieldGuardService generateDefaultMethodFieldGuardService() {
+        return new DefaultMethodFieldGuardService();
     };
 }

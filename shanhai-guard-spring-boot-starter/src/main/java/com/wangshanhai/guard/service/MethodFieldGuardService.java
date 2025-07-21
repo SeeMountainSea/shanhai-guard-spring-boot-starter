@@ -13,13 +13,19 @@ public interface MethodFieldGuardService {
      * @param methodGuardField 字段注解
      * @return
      */
-    Object encrypt(String original, MethodGuardField methodGuardField);
-
+    Object encrypt(Object original, MethodGuardField methodGuardField);
+    /**
+     * 执行对象加密（根据规则ID）
+     * @param original 原始数值
+     * @param ruleId  规则ID
+     * @return
+     */
+    Object encrypt(Object original, String ruleId);
     /**
      * 执行字段解密
      * @param original 原始数值
      * @param methodGuardField 字段注解
      * @return
      */
-    Object decrypt(String original, MethodGuardField methodGuardField);
+    Object decrypt(Object original, MethodGuardField methodGuardField);
 }

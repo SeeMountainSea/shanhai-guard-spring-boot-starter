@@ -10,8 +10,13 @@ public interface MethodGuardService {
      * @param arg
      * @return
      */
-    Object encryptFields(Object arg);
-
+    Object encryptFieldsFromDto(Object arg);
+    /**
+     * 根据规则处理加解密
+     * @param arg
+     * @return
+     */
+    Object encryptFieldsFromRule(Object arg,String ruleId);
     /**
      * 处理结果集解密
      * @param result

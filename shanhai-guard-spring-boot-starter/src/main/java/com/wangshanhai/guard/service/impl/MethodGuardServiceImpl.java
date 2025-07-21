@@ -21,7 +21,7 @@ public class MethodGuardServiceImpl implements MethodGuardService {
     }
 
     @Override
-    public Object encryptFields(Object arg) {
+    public Object encryptFieldsFromDto(Object arg) {
         if (arg == null) {
             return null;
         }
@@ -32,14 +32,18 @@ public class MethodGuardServiceImpl implements MethodGuardService {
                     try {
                         MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
                         field.setAccessible(true);
-                        String original = (String) field.get(arg);
-                        field.set(arg, methodFieldGuardService.encrypt(original, methodGuardField));
+                        field.set(arg, methodFieldGuardService.encrypt(field.get(arg), methodGuardField));
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_ENCRYPT_ERROR,"方法级参数加密失败");
                     }
                 });
         return arg;
+    }
+
+    @Override
+    public Object encryptFieldsFromRule(Object arg, String ruleId) {
+        return methodFieldGuardService.encrypt(arg,ruleId);
     }
 
     @Override

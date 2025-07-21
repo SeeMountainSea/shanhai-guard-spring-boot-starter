@@ -12,5 +12,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodEncryptParam {
-    int[] paramIndexes() default {0};
+    /**
+     * 加密规则
+     */
+    MethodEncryptRule [] rules();
 }
