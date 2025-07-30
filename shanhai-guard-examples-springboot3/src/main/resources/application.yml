@@ -80,5 +80,11 @@ shanhai:
     task-inteval-period: 60
   methoddataguard:
     enable: true
+  systempeak:
+    enable: true
+    cpuTime: 10
+    memPercent: 70
+    holdTime: 60
+    runCron: 0 0/2 * * * ?
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
