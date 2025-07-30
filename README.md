@@ -14,14 +14,15 @@
     <a href="https://github.com/SeeMountainSea/shanhai-guard-spring-boot-starter/blob/master/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SeeMountainSea/shanhai-guard-spring-boot-starter?color=534BAE"/></a>
   </p>
 </div>
-> 1. 支持文件上传安全检测 （支持全局校验、单个方法校验、自定义校验、ZIP扫描校验等多种策略）
-> 2. 支持数据字段级加密与脱敏（支持自行扩展实现相关算法，如对接密码机或加密服务）
-> 3. 支持数据字段级变更数据审计
-> 4. 支持SQL注入&XSS注入安全检测
-> 5. 支持密码复杂度检验 （支持数字、大小写字母、键盘排序、长度、相同字符、连续字符等多种策略）
-> 6. 支持SpringBoot POST请求报文加密、响应报文加密
-> 7. 支持SpringBoot 响应报文进行字段级数据脱敏（支持自行实现脱敏算法）
-> 8. 支持对SpringBoot配置文件任意参数进行参数加密（支持自行扩展加密算法）
-> 9. 支持对全量参数进行敏感词检查与过滤
+1. 支持文件上传安全检测 （支持全局校验、单个方法校验、自定义校验、ZIP扫描校验等多种策略）
+2. 支持数据字段级加密与脱敏（支持自行扩展实现相关算法，如对接密码机或加密服务）
+3. 支持数据字段级变更数据审计
+4. 支持SQL注入&XSS注入安全检测
+5. 支持密码复杂度检验 （支持数字、大小写字母、键盘排序、长度、相同字符、连续字符等多种策略）
+6. 支持SpringBoot POST请求报文加密、响应报文加密
+7. 支持SpringBoot 响应报文进行字段级数据脱敏（支持自行实现脱敏算法）
+8. 支持对SpringBoot配置文件任意参数进行参数加密（支持自行扩展加密算法）
+9. 支持对全量参数进行敏感词检查与过滤
+10. 支持对系统资源进行模拟加压，守护资源使用率
 
 使用说明：https://seemountainsea.github.io/guard/
