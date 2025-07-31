@@ -47,7 +47,7 @@ public class GuardSystemResourceComponent {
 
         try {
             // 阶段1: 触发资源峰值
-            cpuStressor.startStress(cpuTime);
+            cpuStressor.startStress(cpuTime,systemLoadTask.getCpuSingleCoreTimes());
             memStressor.allocate(memPercent);
 
             // 阶段2: 保持峰值状态

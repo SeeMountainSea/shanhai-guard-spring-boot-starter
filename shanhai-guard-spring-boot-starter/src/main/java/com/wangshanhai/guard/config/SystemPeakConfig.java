@@ -25,6 +25,10 @@ public class SystemPeakConfig {
      */
     private int cpuTime = 30;
     /**
+     * CPU密集型单核心计算次数（动态调整负载）
+     */
+    private int cpuSingleCoreTimes=800_000;
+    /**
      * 内存目标，单位百分比
      */
     private int memPercent = 70;

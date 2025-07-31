@@ -19,15 +19,16 @@ public class CpuStressor {
     /**
      * 启动CPU压力测试
      * @param durationSeconds 持续时间(秒)
+     * @param cpuSingleCoreTimes     CPU密集型单核心计算次数（动态调整负载）
      */
-    public void startStress(int durationSeconds) {
+    public void startStress(int durationSeconds,int cpuSingleCoreTimes) {
         if (running) {
             return;
         }
         running = true;
 
         executor = Executors.newFixedThreadPool(coreCount  * 2);
-        log.info("[CPU]  启动{}线程压力测试 (持续{}秒)", coreCount*2, durationSeconds);
+        log.info("[CPU]  启动{}线程压力测试 (持续{}秒),  CPU密集型单核心计算次数：{}", coreCount*2, durationSeconds,cpuSingleCoreTimes);
 
         for (int i = 0; i < coreCount * 2; i++) {
             executor.submit(()  -> {
@@ -35,7 +36,7 @@ public class CpuStressor {
                 // 计算密集型任务 - 莱布尼茨圆周率公式
                 while (running && (System.currentTimeMillis()  - start) < durationSeconds * 1000L) {
                     double pi = 0;
-                    for (int k = 0; k < 800_000; k++) { // 动态计算复杂度
+                    for (int k = 0; k < cpuSingleCoreTimes; k++) { // 动态计算复杂度
                         pi += (k % 2 == 0 ? 1 : -1) / (2.0 * k + 1);
                     }
                 }
