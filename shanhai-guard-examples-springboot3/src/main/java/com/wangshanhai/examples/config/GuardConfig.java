@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableShanHaiGuard
+//@EnableHardwareAuth
 @MapperScan({"com.wangshanhai.examples.mapper"})
 public class GuardConfig  implements WebMvcConfigurer {
 

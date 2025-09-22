@@ -45,7 +45,7 @@ shanhai:
     enable: false
     ignored-table-columns: t_user.user_desc
   fileguard:
-    enable: false
+    enable: true
     pathPatterns:
       - '/**'
     suffix: jpg,gif,png,ico,bmp,jpeg
@@ -79,7 +79,7 @@ shanhai:
     enableReq: false
     enableResp: false
   methoddataguard:
-    enable: true
+    enable: false
   systempeak:
     enable: false
     cpuTime: 10
@@ -88,3 +88,6 @@ shanhai:
     runCron: 0 0/2 * * * ?
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
+
+license:
+  lic: d:/shanhai.lic

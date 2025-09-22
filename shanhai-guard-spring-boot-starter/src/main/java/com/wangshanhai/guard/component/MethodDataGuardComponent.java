@@ -103,7 +103,7 @@ public class MethodDataGuardComponent {
                     try {
                         MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
                         field.setAccessible(true);
-                        field.set(arg, methodFieldGuardService.encrypt(field.get(arg),field.getName(), methodGuardField));
+                        field.set(arg, methodFieldGuardService.handleReq(field.get(arg),field.getName(), methodGuardField));
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_ENCRYPT_ERROR,"方法级参数加密失败");
@@ -113,7 +113,7 @@ public class MethodDataGuardComponent {
     }
 
     private Object encryptFieldsFromRule(Object arg,String fieldName, String ruleId) {
-        return methodFieldGuardService.encrypt(arg,fieldName,ruleId);
+        return methodFieldGuardService.handleReq(arg,fieldName,ruleId);
     }
 
     private Object decryptFields(Object arg) {
@@ -127,7 +127,7 @@ public class MethodDataGuardComponent {
                     try {
                         MethodGuardField methodGuardField = field.getAnnotation(MethodGuardField.class);
                         field.setAccessible(true);
-                        field.set(arg, methodFieldGuardService.decrypt(field.get(arg), methodGuardField));
+                        field.set(arg, methodFieldGuardService.handleResp(field.get(arg), methodGuardField));
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.METHOD_DECRYPT_ERROR,"方法级参数解密失败");

@@ -39,7 +39,7 @@ public class MemoryStressor {
                 memoryBlocks.add(new  byte[BLOCK_SIZE]);
                 // 每分配100MB打印进度
                 if (memoryBlocks.size()  % 10 == 0) {
-                    log.info("[内存] 已使用:{} MB, 已分配: {} MB",currentUsed/(1024 * 1024), (memoryBlocks.size()  * BLOCK_SIZE) / (1024 * 1024));
+                    log.info("[内存] 已使用:{} MB, 已分配: {} MB",currentUsed/(1024 * 1024), ((long)memoryBlocks.size()  * BLOCK_SIZE) / (1024 * 1024));
                 }
             } catch (OutOfMemoryError e) {
                 log.error("[内存] 内存分配失败，已达到上限");

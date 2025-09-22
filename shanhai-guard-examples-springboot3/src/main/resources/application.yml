@@ -88,3 +88,5 @@ shanhai:
     runCron: 0 0/2 * * * ?
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
+license:
+  lic: d:/shanhai.lic

@@ -11,17 +11,17 @@ import com.wangshanhai.guard.utils.ShanHaiGuardException;
  */
 public class DefaultMethodFieldGuardService implements MethodFieldGuardService {
     @Override
-    public Object encrypt(Object original,String fieldName, MethodGuardField methodGuardField) {
+    public Object handleReq(Object original,String fieldName, MethodGuardField methodGuardField) {
         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.COMPONENT_INIT_ERROR,"请先实现自定义加密规则后再启用该组件!");
     }
 
     @Override
-    public Object encrypt(Object original,String fieldName, String ruleId) {
+    public Object handleReq(Object original,String fieldName, String ruleId) {
         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.COMPONENT_INIT_ERROR,"请先实现自定义加密规则后再启用该组件!");
     }
 
     @Override
-    public Object decrypt(Object original, MethodGuardField methodGuardField) {
+    public Object handleResp(Object original, MethodGuardField methodGuardField) {
         throw new ShanHaiGuardException(ShanHaiGuardErrorCode.COMPONENT_INIT_ERROR,"请先实现自定义解密规则后再启用该组件!");
     }
 }
