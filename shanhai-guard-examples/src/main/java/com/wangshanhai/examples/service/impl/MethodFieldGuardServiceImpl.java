@@ -14,19 +14,19 @@ import org.springframework.stereotype.Service;
 public class MethodFieldGuardServiceImpl implements MethodFieldGuardService {
 
     @Override
-    public Object encrypt(Object original,String fieldName, MethodGuardField methodGuardField) {
+    public Object handleReq(Object original,String fieldName, MethodGuardField methodGuardField) {
         log.warn("[MethodFieldGuardService-encrypt]-source:{},fieldName:{},methodGuardField:{}",original,fieldName,methodGuardField);
         return original+"@MethodGuardField";
     }
 
     @Override
-    public Object encrypt(Object original,String fieldName, String ruleId) {
+    public Object handleReq(Object original,String fieldName, String ruleId) {
         log.warn("[MethodFieldGuardService-encrypt]-source:{},fieldName:{},ruleId:{}",original,fieldName,ruleId);
         return original+"@encrypt";
     }
 
     @Override
-    public Object decrypt(Object original, MethodGuardField methodGuardField) {
+    public Object handleResp(Object original, MethodGuardField methodGuardField) {
         log.warn("[MethodFieldGuardService-decrypt]-source:{},methodGuardField:{}",original,methodGuardField);
         return original+"@decrypt";
     }
