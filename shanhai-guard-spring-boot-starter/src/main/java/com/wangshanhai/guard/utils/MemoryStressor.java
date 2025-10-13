@@ -1,10 +1,12 @@
 package com.wangshanhai.guard.utils;
 
+import com.sun.management.UnixOperatingSystemMXBean;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,10 @@ public class MemoryStressor {
         if (allocated) {
             return;
         }
-
+        // 检查系统内存压力
+        if (isMemoryPressureHigh()) {
+            return;
+        }
         Runtime rt = Runtime.getRuntime();
         long maxMem = rt.maxMemory();
         long currentUsed=rt.totalMemory()  - rt.freeMemory();
@@ -40,6 +45,9 @@ public class MemoryStressor {
                 // 每分配100MB打印进度
                 if (memoryBlocks.size()  % 10 == 0) {
                     log.info("[内存] 已使用:{} MB, 已分配: {} MB",currentUsed/(1024 * 1024), ((long)memoryBlocks.size()  * BLOCK_SIZE) / (1024 * 1024));
+                }
+                if (isMemoryPressureHigh()) {
+                    break;
                 }
             } catch (OutOfMemoryError e) {
                 log.error("[内存] 内存分配失败，已达到上限");
@@ -72,5 +80,24 @@ public class MemoryStressor {
         long maxMB = heapUsage.getMax()  / (1024 * 1024);
         log.info("[内存] {}  ➤ 使用: {} MB / 最大: {} MB ({}%)",
                 phase, usedMB, maxMB, (usedMB * 100.0 / maxMB));
+    }
+    private boolean isMemoryPressureHigh() {
+        // 检查系统内存使用率
+        try {
+            OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+            if (osBean instanceof UnixOperatingSystemMXBean) {
+                UnixOperatingSystemMXBean unixBean = (UnixOperatingSystemMXBean) osBean;
+                long freeMem = unixBean.getFreePhysicalMemorySize();
+                long totalMem = unixBean.getTotalPhysicalMemorySize();
+                long usage = (totalMem - freeMem) / totalMem;
+                log.info("[内存物理检测]  ➤ 使用: {} MB / 最大: {} MB ({}%)",
+                        (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), (usage * 100.0 ));
+                // 当系统内存使用率超过85%时拒绝分配
+                return usage > 0.85;
+            }
+        } catch (Exception e) {
+            log.warn("[内存物理检测]-{}", e.getMessage());
+        }
+        return false;
     }
 }
