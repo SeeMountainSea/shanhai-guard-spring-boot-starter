@@ -89,16 +89,16 @@ public class MemoryStressor {
                 UnixOperatingSystemMXBean unixBean = (UnixOperatingSystemMXBean) osBean;
                 long freeMem = unixBean.getFreePhysicalMemorySize();
                 long totalMem = unixBean.getTotalPhysicalMemorySize();
-                long usage = (totalMem - freeMem) / totalMem;
-                if(usage>0.85){
+                double  usage = (double)(totalMem - freeMem) / totalMem*100;
+                if(usage>85){
                     log.warn("[内存物理检测] 已超越阈值 ➤ 使用: {} MB / 最大: {} MB ({}%)",
-                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), (usage * 100.0 ));
+                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), usage);
                 }else {
                     log.info("[内存物理检测]  ➤ 使用: {} MB / 最大: {} MB ({}%)",
-                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), (usage * 100.0 ));
+                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), usage);
                 }
                 // 当系统内存使用率超过85%时拒绝分配
-                return usage > 0.85;
+                return usage > 85;
             }
         } catch (Exception e) {
             log.warn("[内存物理检测]-{}", e.getMessage());
