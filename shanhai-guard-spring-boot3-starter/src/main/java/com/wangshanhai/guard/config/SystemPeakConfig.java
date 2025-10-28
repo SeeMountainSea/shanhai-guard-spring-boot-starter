@@ -40,4 +40,12 @@ public class SystemPeakConfig {
      * 负载提升执行时间表达式
      */
     private String runCron="0 0/5 * * * ?";
+    /**
+     * 操作系统级内存安全检测
+     */
+    private boolean operatingSystemMemoryCheck=false;
+    /**
+     * 操作系统级内存检测阈值
+     */
+    private int operatingSystemMemPercent=85;
 }

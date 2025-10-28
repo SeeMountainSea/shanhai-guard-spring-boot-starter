@@ -82,10 +82,13 @@ shanhai:
     enable: false
   systempeak:
     enable: false
-    cpuTime: 10
-    memPercent: 70
-    holdTime: 60
-    runCron: 0 0/2 * * * ?
+    cpuTime: 50
+    memPercent: 20
+    holdTime: 120
+    cpuSingleCoreTimes: 80_000
+    runCron: 0 0/5 * * * ?
+    operating-system-memory-check: false
+    operating-system-mem-percent: 85
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
 

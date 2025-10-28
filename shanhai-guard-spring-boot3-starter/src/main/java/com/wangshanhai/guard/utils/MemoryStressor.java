@@ -25,12 +25,12 @@ public class MemoryStressor {
      * 申请内存到目标使用率
      * @param targetPercent 目标内存使用率(0-100)
      */
-    public void allocate(int targetPercent) {
+    public void allocate(int targetPercent,boolean operatingSystemMemoryCheck,int systemMemPercent ) {
         if (allocated) {
             return;
         }
         // 检查系统内存压力
-        if (isMemoryPressureHigh()) {
+        if (operatingSystemMemoryCheck&&isMemoryPressureHigh(systemMemPercent)) {
             return;
         }
         Runtime rt = Runtime.getRuntime();
@@ -42,11 +42,16 @@ public class MemoryStressor {
         while ((currentUsed = rt.totalMemory()  - rt.freeMemory())  < targetBytes) {
             try {
                 memoryBlocks.add(new  byte[BLOCK_SIZE]);
+                // 填充数据确保内存被实际使用
+                byte[] chunk = memoryBlocks.get(memoryBlocks.size() - 1);
+                for (int i = 0; i < chunk.length; i++) {
+                    chunk[i] = (byte) (i % 256);
+                }
                 // 每分配100MB打印进度
                 if (memoryBlocks.size()  % 10 == 0) {
                     log.info("[内存] 已使用:{} MB, 已分配: {} MB",currentUsed/(1024 * 1024), ((long)memoryBlocks.size()  * BLOCK_SIZE) / (1024 * 1024));
                 }
-                if (isMemoryPressureHigh()) {
+                if (operatingSystemMemoryCheck&&isMemoryPressureHigh(systemMemPercent)) {
                     break;
                 }
             } catch (OutOfMemoryError e) {
@@ -81,7 +86,7 @@ public class MemoryStressor {
         log.info("[内存] {}  ➤ 使用: {} MB / 最大: {} MB ({}%)",
                 phase, usedMB, maxMB, (usedMB * 100.0 / maxMB));
     }
-    private boolean isMemoryPressureHigh() {
+    private boolean isMemoryPressureHigh(int systemMemPercent) {
         // 检查系统内存使用率
         try {
             OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
@@ -90,15 +95,15 @@ public class MemoryStressor {
                 long freeMem = unixBean.getFreePhysicalMemorySize();
                 long totalMem = unixBean.getTotalPhysicalMemorySize();
                 double  usage = (double)(totalMem - freeMem) / totalMem*100;
-                if(usage>85){
+                if(usage>systemMemPercent){
                     log.warn("[内存物理检测] 已超越阈值 ➤ 使用: {} MB / 最大: {} MB ({}%)",
                             (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), usage);
                 }else {
                     log.info("[内存物理检测]  ➤ 使用: {} MB / 最大: {} MB ({}%)",
-                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024), usage);
+                            (totalMem - freeMem) / (1024 * 1024), totalMem / (1024 * 1024),usage);
                 }
                 // 当系统内存使用率超过85%时拒绝分配
-                return usage > 85;
+                return usage > systemMemPercent;
             }
         } catch (Exception e) {
             log.warn("[内存物理检测]-{}", e.getMessage());

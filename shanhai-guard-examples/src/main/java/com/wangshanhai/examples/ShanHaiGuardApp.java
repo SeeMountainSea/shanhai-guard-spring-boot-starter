@@ -4,6 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+/**
+ * Guard组件测试
+ * @author guard
+ */
 @SpringBootApplication
 public class ShanHaiGuardApp {
     public static void main(String[] args) throws Exception {

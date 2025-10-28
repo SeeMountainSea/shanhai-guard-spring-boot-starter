@@ -38,9 +38,11 @@ public class GuardSystemResourceComponent {
         int cpuTime = systemLoadTask.getCpuTime();
         int memPercent = systemLoadTask.getMemPercent();
         int holdTime = systemLoadTask.getHoldTime();
+        boolean operatingSystemMemoryCheck=systemLoadTask.isOperatingSystemMemoryCheck();
+        int systemMemPercent = systemLoadTask.getOperatingSystemMemPercent();
         System.out.println("=====  资源峰值模拟开始 =====");
-        System.out.printf(" 参数: CPU压力=%ds | 内存目标=%d%% | 峰值保持=%ds%n%n",
-                cpuTime, memPercent, holdTime);
+        System.out.printf(" 参数: CPU压力=%ds | 内存目标=%d%% | 峰值保持=%ds |物理内存极限:%d%%%n%n",
+                cpuTime, memPercent, holdTime,systemMemPercent);
 
         CpuStressor cpuStressor = new CpuStressor();
         MemoryStressor memStressor = new MemoryStressor();
@@ -48,7 +50,7 @@ public class GuardSystemResourceComponent {
         try {
             // 阶段1: 触发资源峰值
             cpuStressor.startStress(cpuTime,systemLoadTask.getCpuSingleCoreTimes());
-            memStressor.allocate(memPercent);
+            memStressor.allocate(memPercent,operatingSystemMemoryCheck,systemMemPercent);
 
             // 阶段2: 保持峰值状态
             System.out.printf("%n[系统] 峰值状态保持 %d 秒...%n", holdTime);
