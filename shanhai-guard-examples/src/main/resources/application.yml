@@ -81,7 +81,7 @@ shanhai:
   methoddataguard:
     enable: false
   systempeak:
-    enable: true
+    enable: false
     cpuTime: 50
     memPercent: 20
     holdTime: 120
@@ -89,6 +89,16 @@ shanhai:
     runCron: 0 0/1 * * * ?
     operating-system-memory-check: false
     operating-system-mem-percent: 85
+  assaultsimulator:
+    enable: true
+    enable-simulator-exception: false
+    exception-batch-size: 100
+    exception-max-times: 100
+    exception-min-times: 100
+    enable-simulator-sleep: false
+    sleep-batch-size: 100
+    sleep-min-times: 100
+    sleep-max-times: 100
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
 

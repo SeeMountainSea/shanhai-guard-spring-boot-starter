@@ -73,7 +73,7 @@ public class AssaultSimulator {
 
         this.currentBatch = batch;
         this.requestCounter = 0;
-        Logger.info("[AssaultSimulator]-总次数:{},模拟次数:{} ",batchSize,currentExceptionCount);
+        Logger.debug("[AssaultSimulator]-总次数:{},模拟次数:{} ",batchSize,currentExceptionCount);
     }
 
     /**
@@ -122,7 +122,7 @@ public class AssaultSimulator {
      * 获取配置信息
      */
     public String getConfiguration() {
-        return String.format("批次大小: %d, 异常次数: %d-%d",
+        return String.format("%d|%d-%d",
                 batchSize, minExceptions, maxExceptions);
     }
 

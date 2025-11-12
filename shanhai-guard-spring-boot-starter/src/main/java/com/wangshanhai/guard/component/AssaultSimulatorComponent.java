@@ -27,10 +27,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class AssaultSimulatorComponent  implements WebMvcConfigurer {
     @Autowired
     private AssaultSimulatorConfig  assaultSimulatorConfig;
+    @Autowired
+    private AssaultSimulatorInterceptor assaultSimulatorInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         Logger.info("[Assault-Simulator-Init]-init Component");
-        registry.addInterceptor(new AssaultSimulatorInterceptor(this.assaultSimulatorConfig)).addPathPatterns(assaultSimulatorConfig.getPathPatterns())
+        registry.addInterceptor(assaultSimulatorInterceptor).addPathPatterns(assaultSimulatorConfig.getPathPatterns())
                 .excludePathPatterns(assaultSimulatorConfig.getExcludePathPatterns());
     }
 }
