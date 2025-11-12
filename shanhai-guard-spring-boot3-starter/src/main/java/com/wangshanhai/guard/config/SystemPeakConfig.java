@@ -48,4 +48,12 @@ public class SystemPeakConfig {
      * 操作系统级内存检测阈值
      */
     private int operatingSystemMemPercent=85;
+    /**
+     * 操作系统级CPU安全检测
+     */
+    private boolean operatingSystemCpuCheck=false;
+    /**
+     * 操作系统级CPU检测阈值
+     */
+    private int operatingSystemCpuPercent=85;
 }

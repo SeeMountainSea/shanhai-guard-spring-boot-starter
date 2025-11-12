@@ -2,6 +2,8 @@ package com.wangshanhai.guard.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,12 +23,14 @@ public class CpuStressor {
      * @param durationSeconds 持续时间(秒)
      * @param cpuSingleCoreTimes     CPU密集型单核心计算次数（动态调整负载）
      */
-    public void startStress(int durationSeconds,int cpuSingleCoreTimes) {
+    public void startStress(int durationSeconds,int cpuSingleCoreTimes,boolean operatingSystemCpuCheck,int systemCpuPercent) {
         if (running) {
             return;
         }
         running = true;
-
+        if (operatingSystemCpuCheck&&isCpuPressureHigh(systemCpuPercent)) {
+            return;
+        }
         executor = Executors.newFixedThreadPool(coreCount  * 2);
         log.info("[CPU]  启动{}线程压力测试 (持续{}秒),  CPU密集型单核心计算次数：{}", coreCount*2, durationSeconds,cpuSingleCoreTimes);
 
@@ -42,6 +46,28 @@ public class CpuStressor {
                 }
             });
         }
+    }
+
+    private boolean isCpuPressureHigh(int systemCpuPercent) {
+        // 检查系统内存使用率
+        try {
+            OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+            if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
+                com.sun.management.OperatingSystemMXBean unixBean = (com.sun.management.OperatingSystemMXBean) osBean;
+                double systemCpuLoad = unixBean.getSystemCpuLoad()*100;
+                if(systemCpuLoad>systemCpuPercent){
+                    log.warn("[CPU物理检测] 已超越阈值 ➤ 当前负载:{}%,极限峰值:{}%",systemCpuLoad,systemCpuPercent);
+                }else {
+                    log.info("[CPU物理检测] 已使用 ➤ 当前负载:{}%,极限峰值:{}%",systemCpuLoad,systemCpuPercent);
+                }
+                // 当系统内存使用率超过85%时拒绝分配
+                return systemCpuLoad > systemCpuPercent;
+            }
+        } catch (Exception e) {
+            log.warn("[CPU物理检测]-{}", e.getMessage());
+        }
+        log.error("[CPU物理检测]-不支持物理CPU检测！");
+        return false;
     }
 
     /**

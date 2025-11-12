@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * 资源峰值模拟配置
@@ -14,6 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@RefreshScope
 @ConfigurationProperties(prefix = "shanhai.systempeak")
 public class SystemPeakConfig {
     /**
@@ -48,4 +50,12 @@ public class SystemPeakConfig {
      * 操作系统级内存检测阈值
      */
     private int operatingSystemMemPercent=85;
+    /**
+     * 操作系统级CPU安全检测
+     */
+    private boolean operatingSystemCpuCheck=false;
+    /**
+     * 操作系统级CPU检测阈值
+     */
+    private int operatingSystemCpuPercent=85;
 }

@@ -81,12 +81,12 @@ shanhai:
   methoddataguard:
     enable: false
   systempeak:
-    enable: false
+    enable: true
     cpuTime: 50
     memPercent: 20
     holdTime: 120
     cpuSingleCoreTimes: 80_000
-    runCron: 0 0/5 * * * ?
+    runCron: 0 0/1 * * * ?
     operating-system-memory-check: false
     operating-system-mem-percent: 85
 app:

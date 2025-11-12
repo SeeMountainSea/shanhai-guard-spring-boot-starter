@@ -34,4 +34,8 @@ public interface ShanHaiGuardErrorCode {
      * 请求报文解密错误
      */
     String DECODE_BODY_ERROR="210007";
+    /**
+     * 模拟阻断异常
+     */
+    String ASSAULT_SIMULATOR_ERROR="210008";
 }

@@ -1,6 +1,5 @@
 package com.wangshanhai.guard.utils;
 
-import com.sun.management.UnixOperatingSystemMXBean;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.management.ManagementFactory;
@@ -91,8 +90,8 @@ public class MemoryStressor {
         try {
             int maxPercent= Math.min(systemMemPercent, targetPercent);
             OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-            if (osBean instanceof UnixOperatingSystemMXBean) {
-                UnixOperatingSystemMXBean unixBean = (UnixOperatingSystemMXBean) osBean;
+            if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
+                com.sun.management.OperatingSystemMXBean unixBean = (com.sun.management.OperatingSystemMXBean) osBean;
                 long freeMem = unixBean.getFreePhysicalMemorySize();
                 long totalMem = unixBean.getTotalPhysicalMemorySize();
                 double  usage = (double)(totalMem - freeMem) / totalMem*100;
@@ -109,6 +108,7 @@ public class MemoryStressor {
         } catch (Exception e) {
             log.warn("[内存物理检测]-{}", e.getMessage());
         }
+        log.error("[内存物理检测]-不支持物理内存检测！");
         return false;
     }
 }
