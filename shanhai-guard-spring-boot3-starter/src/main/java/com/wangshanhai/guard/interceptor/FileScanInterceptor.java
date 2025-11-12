@@ -4,13 +4,18 @@ import com.wangshanhai.guard.annotation.FileGuard;
 import com.wangshanhai.guard.annotation.FileType;
 import com.wangshanhai.guard.config.FileGuardConfig;
 import com.wangshanhai.guard.service.FileGuardRuleDefService;
+import com.wangshanhai.guard.utils.Logger;
 import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
 import com.wangshanhai.guard.utils.ShanHaiGuardException;
-import com.wangshanhai.guard.utils.Logger;
 import com.wangshanhai.guard.utils.ZipUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,20 +33,25 @@ import java.util.*;
  * 文件扫描拦截器
  * @author Shmily
  */
+@Configuration
+@EnableConfigurationProperties(FileGuardConfig.class)
+@AutoConfigureAfter(WebMvcConfigurationSupport.class)
+@ConditionalOnProperty(
+        prefix = "shanhai.fileguard",
+        name = "enable",
+        havingValue = "true"
+)
 public class FileScanInterceptor implements HandlerInterceptor {
     /**
      * 配置参数
      */
+    @Autowired
     private FileGuardConfig fileGuardConfig;
     /**
      * 自定义文件校验规则
      */
+    @Autowired
     private FileGuardRuleDefService fileGuardRuleDefService;
-
-    public FileScanInterceptor(FileGuardConfig fileGuardConfig,FileGuardRuleDefService fileGuardRuleDefService) {
-        this.fileGuardConfig = fileGuardConfig;
-        this.fileGuardRuleDefService=fileGuardRuleDefService;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

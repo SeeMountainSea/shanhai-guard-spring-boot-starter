@@ -33,10 +33,12 @@ public class FileGuardComponent  implements WebMvcConfigurer {
     private FileGuardConfig fileGuardConfig;
     @Autowired
     private FileGuardRuleDefService fileGuardRuleDefService;
+    @Autowired
+    private FileScanInterceptor fileScanInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         Logger.info("[File-Guard-Init]-init Component");
-        registry.addInterceptor(new FileScanInterceptor(this.fileGuardConfig,this.fileGuardRuleDefService)).addPathPatterns(fileGuardConfig.getPathPatterns())
+        registry.addInterceptor(fileScanInterceptor).addPathPatterns(fileGuardConfig.getPathPatterns())
         .excludePathPatterns(fileGuardConfig.getExcludePathPatterns());
     }
 
