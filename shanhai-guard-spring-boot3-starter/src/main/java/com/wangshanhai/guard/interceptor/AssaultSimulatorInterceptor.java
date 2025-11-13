@@ -39,14 +39,8 @@ public class AssaultSimulatorInterceptor implements HandlerInterceptor {
 
     @PostConstruct
     public void init() {
-        if(assaultSimulatorConfig.getEnableSimulatorSleep()){
-            apiRequestSimulator=new AssaultSimulator(assaultSimulatorConfig.getSleepBatchSize(),
-                    assaultSimulatorConfig.getSleepMinTimes(),assaultSimulatorConfig.getSleepMaxTimes());
-        }
-        if(assaultSimulatorConfig.getEnableSimulatorException()){
-            this.apiResponseSimulator=new AssaultSimulator(assaultSimulatorConfig.getExceptionBatchSize(),
-                    assaultSimulatorConfig.getExceptionMinTimes(),assaultSimulatorConfig.getExceptionMaxTimes());
-        }
+        this.apiRequestSimulator=new AssaultSimulator();
+        this.apiResponseSimulator=new AssaultSimulator();
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
