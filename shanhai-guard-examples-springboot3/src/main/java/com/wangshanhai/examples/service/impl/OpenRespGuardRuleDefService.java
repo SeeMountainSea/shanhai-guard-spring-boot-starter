@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class OpenRespGuardRuleDefService implements RespGuardRuleDefService {
     @Override
-    public Object jsonGenerator(String ruleId, Object fieldValue) {
-        return String.valueOf(fieldValue)+"@"+ruleId;
+    public Object jsonGenerator(String ruleId,String superPermissionCode, Object fieldValue) {
+        return String.valueOf(fieldValue)+"@"+ruleId+"@"+superPermissionCode;
     }
 
     @Override

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 //@RespDataGuard
 public class RespInfo {
-    @RespFieldGuard(ruleId = "text")
+    @RespFieldGuard(ruleId = "text",superPermissionCode = "system:supper")
     private String text;
     @MethodGuardField(paramGuardRuleId = "aes",resultGuardRuleId = "aes")
     private String msg;

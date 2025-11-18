@@ -63,7 +63,7 @@ shanhai:
     enable: false
     mode: 1
   respguard:
-    enable: false
+    enable: true
     trace-log: true
   encodebody:
     enable: false

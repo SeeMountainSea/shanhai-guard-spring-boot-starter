@@ -3,6 +3,7 @@ package com.wangshanhai.guard.resp;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
+import com.wangshanhai.guard.annotation.RespFieldGuard;
 import com.wangshanhai.guard.config.RespGuardConfig;
 import com.wangshanhai.guard.service.RespGuardRuleDefService;
 import com.wangshanhai.guard.utils.Logger;
@@ -17,13 +18,13 @@ import java.util.Objects;
 public class RespDataSerializer extends StdScalarSerializer<Object> {
     private RespGuardRuleDefService respGuardRuleDefService;
     private RespGuardConfig respGuardConfig;
-    private String ruleId;
+    private RespFieldGuard respFieldGuard;
     private String tragetClass;
-    public RespDataSerializer(Class<Object> t,RespGuardRuleDefService respGuardRuleDefService,String ruleId,
-                             String tragetClass, RespGuardConfig respGuardConfig) {
+    public RespDataSerializer(Class<Object> t, RespGuardRuleDefService respGuardRuleDefService, RespFieldGuard respFieldGuard,
+                              String tragetClass, RespGuardConfig respGuardConfig) {
         super(t);
         this.respGuardRuleDefService=respGuardRuleDefService;
-        this.ruleId=ruleId;
+        this.respFieldGuard=respFieldGuard;
         this.tragetClass=tragetClass;
         this.respGuardConfig=respGuardConfig;
     }
@@ -34,9 +35,9 @@ public class RespDataSerializer extends StdScalarSerializer<Object> {
     public void serialize(Object value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         if (!Objects.isNull(value)) {
             if(respGuardConfig.isTraceLog()){
-                Logger.info("[ShanhaiRespGuard-RespFieldGuard]-class:{},ruleId:{}",tragetClass,ruleId);
+                Logger.info("[ShanhaiRespGuard-RespFieldGuard]-class:{},ruleId:{},superPermissionCode:{}",tragetClass,respFieldGuard.ruleId(),respFieldGuard.superPermissionCode());
             }
-            jsonGenerator.writeObject(respGuardRuleDefService.jsonGenerator(ruleId,value));
+            jsonGenerator.writeObject(respGuardRuleDefService.jsonGenerator(respFieldGuard.ruleId(),respFieldGuard.superPermissionCode(),value));
         }
     }
 }

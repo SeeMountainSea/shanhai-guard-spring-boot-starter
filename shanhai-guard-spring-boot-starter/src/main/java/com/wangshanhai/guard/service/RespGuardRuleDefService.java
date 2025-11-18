@@ -11,7 +11,7 @@ public interface RespGuardRuleDefService {
      * @param fieldValue 字段值
      * @return
      */
-    default Object jsonGenerator(String ruleId,Object fieldValue){
+    default Object jsonGenerator(String ruleId,String superPermissionCode,Object fieldValue){
         return fieldValue;
     }
     /**

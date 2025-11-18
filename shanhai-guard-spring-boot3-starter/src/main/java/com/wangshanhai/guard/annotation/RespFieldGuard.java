@@ -15,4 +15,10 @@ public @interface RespFieldGuard {
      * @return
      */
     String ruleId() default "";
+    /**
+     * 免脱敏权限编码
+     * 登录用户拥有该权限，则可以绕开脱敏规则
+     * @return
+     */
+    String superPermissionCode() default "";
 }

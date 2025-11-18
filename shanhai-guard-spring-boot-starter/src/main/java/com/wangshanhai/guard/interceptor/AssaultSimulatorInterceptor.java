@@ -2,13 +2,16 @@ package com.wangshanhai.guard.interceptor;
 
 import com.wangshanhai.guard.config.AssaultSimulatorConfig;
 import com.wangshanhai.guard.utils.AssaultSimulator;
+import com.wangshanhai.guard.utils.Logger;
 import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
 import com.wangshanhai.guard.utils.ShanHaiGuardException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -41,6 +44,13 @@ public class AssaultSimulatorInterceptor implements HandlerInterceptor {
     public void init() {
         this.apiRequestSimulator=new AssaultSimulator(assaultSimulatorConfig.getSleepBatchSize(),assaultSimulatorConfig.getSleepMinTimes(),assaultSimulatorConfig.getSleepMaxTimes());
         this.apiResponseSimulator=new AssaultSimulator(assaultSimulatorConfig.getExceptionBatchSize(),assaultSimulatorConfig.getExceptionMinTimes(),assaultSimulatorConfig.getExceptionMaxTimes());
+    }
+    @EventListener
+    public void handleRefreshScopeRefresh(RefreshScopeRefreshedEvent event) {
+        Logger.info("[AssaultSimulator]-begin refresh simulator");
+        this.apiRequestSimulator=new AssaultSimulator(assaultSimulatorConfig.getSleepBatchSize(),assaultSimulatorConfig.getSleepMinTimes(),assaultSimulatorConfig.getSleepMaxTimes());
+        this.apiResponseSimulator=new AssaultSimulator(assaultSimulatorConfig.getExceptionBatchSize(),assaultSimulatorConfig.getExceptionMinTimes(),assaultSimulatorConfig.getExceptionMaxTimes());
+        Logger.info("[AssaultSimulator]-auto refresh simulator completed");
     }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

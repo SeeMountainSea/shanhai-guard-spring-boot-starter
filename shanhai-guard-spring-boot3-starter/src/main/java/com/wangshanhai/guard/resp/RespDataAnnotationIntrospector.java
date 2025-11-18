@@ -37,9 +37,9 @@ public class RespDataAnnotationIntrospector extends NopAnnotationIntrospector {
                 e.printStackTrace();
             }
         }
-        RespFieldGuard annotation = annotated.getAnnotation(RespFieldGuard.class);
-        if (annotation != null) {
-            return new RespDataSerializer(null,respGuardRuleDefService,annotation.ruleId(),target.getName(),respGuardConfig);
+        RespFieldGuard respFieldGuard = annotated.getAnnotation(RespFieldGuard.class);
+        if (respFieldGuard != null) {
+            return new RespDataSerializer(null,respGuardRuleDefService,respFieldGuard,target.getName(),respGuardConfig);
         }
         return null;
     }
