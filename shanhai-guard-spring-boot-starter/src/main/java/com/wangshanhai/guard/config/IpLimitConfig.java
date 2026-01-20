@@ -9,30 +9,28 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 文件防火墙配置
- * @author Shmily
+ * @author gaurd
  */
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @RefreshScope
-@ConfigurationProperties(prefix = "shanhai.fileguard")
-public class FileGuardConfig {
+@ConfigurationProperties(prefix = "shanhai.iplimit")
+public class IpLimitConfig {
     /**
      * 是否开启
      */
     private Boolean enable=false;
     /**
-     * 是否开启ZIP扫描
+     * 渠道IP白名单配置
+     * key: 渠道标识, value: IP段列表
      */
-    private Boolean zipScan=false;
-    /**
-     * ZIP压缩包可信范围
-     */
-    private String zipSafeSuffixs="";
+    private Map<String, String[]> channels;
     /**
      * 拦截范围
      */
@@ -41,16 +39,4 @@ public class FileGuardConfig {
      * 不拦截范围
      */
     private List<String> excludePathPatterns=new ArrayList<>();
-    /**
-     * 文件类型白名单
-     */
-    private String suffix="jpg,gif,png,ico,bmp,jpeg";
-    /**
-     * 开启文件类型二进制校验
-     */
-    private Boolean fileRealCheck=false;
-    /**
-     * 是否开启上传日志
-     */
-    private Boolean logTarce=false;
 }

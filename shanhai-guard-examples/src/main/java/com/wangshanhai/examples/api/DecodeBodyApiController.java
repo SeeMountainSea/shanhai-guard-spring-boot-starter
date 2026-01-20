@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import com.wangshanhai.examples.domain.RespInfo;
 import com.wangshanhai.guard.annotation.DecodeBody;
 import com.wangshanhai.guard.annotation.EncodeBody;
+import com.wangshanhai.guard.annotation.IpLimit;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class DecodeBodyApiController {
      * @param body
      * @return
      */
+    @IpLimit(channel = "shanhai-biz-1")
     @RequestMapping(value = "/decodeAll")
     @ResponseBody
     public String decodeAll(@RequestBody String body){

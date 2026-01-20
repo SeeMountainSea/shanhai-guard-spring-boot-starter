@@ -41,9 +41,6 @@ shanhai:
     trace-log: true
     slow-filter: true
     slow-time: 1000
-  dataaudit:
-    enable: false
-    ignored-table-columns: t_user.user_desc
   fileguard:
     enable: false
     pathPatterns:
@@ -54,11 +51,6 @@ shanhai:
     enable: false
     path-patterns:
       - '/*'
-  mysqlguard:
-    enable: false
-    where-exist: false
-    limit-exist: false
-    query-limit: 20000
   decodebody:
     enable: false
     mode: 1
@@ -79,13 +71,19 @@ shanhai:
     task-enable: true
     task-inteval-period: 60
   methoddataguard:
-    enable: true
+    enable: false
   systempeak:
-    enable: true
+    enable: false
     cpuTime: 10
     memPercent: 70
     holdTime: 60
     runCron: 0 0/2 * * * ?
+  iplimit:
+    enable: true
+    channels:
+      shanhai-biz-1:
+        - "192.168.1.0/24"
+        - "10.0.0.0/8"
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
 license:

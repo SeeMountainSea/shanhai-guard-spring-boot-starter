@@ -1,13 +1,12 @@
 package com.wangshanhai.guard.component;
 
-import com.alibaba.fastjson2.JSON;
 import com.wangshanhai.guard.annotation.EncodeBody;
 import com.wangshanhai.guard.annotation.EncodeBodyIgnore;
 import com.wangshanhai.guard.config.EncodeBodyConfig;
 import com.wangshanhai.guard.service.EncodeBodyService;
+import com.wangshanhai.guard.utils.Logger;
 import com.wangshanhai.guard.utils.ShanHaiGuardErrorCode;
 import com.wangshanhai.guard.utils.ShanHaiGuardException;
-import com.wangshanhai.guard.utils.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -63,13 +62,16 @@ public class EncodeBodyComponent implements ResponseBodyAdvice {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         try{
-            String respBody=null;
+            Object respBody=null;
             if(encodeBodyConfig.getMode()==1){
-                respBody=encodeBodyService.encodeRespBody(JSON.toJSONString(body));
+                if(methodParameter.hasMethodAnnotation(EncodeBody.class)){
+                    respBody=encodeBodyService.encodeRespBody( methodParameter.getMethodAnnotation(EncodeBody.class).ruleId(),body,response);
+                }else{
+                    respBody=encodeBodyService.encodeRespBody(body,response);
+                }
             }else {
-                respBody=encodeBodyService.encodeRespBody( methodParameter.getMethodAnnotation(EncodeBody.class).ruleId(),JSON.toJSONString(body));
+                respBody=encodeBodyService.encodeRespBody(methodParameter.getMethodAnnotation(EncodeBody.class).ruleId(),body,response);
             }
-            response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
             return respBody;
         }catch (Exception e){
             Logger.error("[Resp-Body-EncodeError]-msg:{}",e.getMessage());

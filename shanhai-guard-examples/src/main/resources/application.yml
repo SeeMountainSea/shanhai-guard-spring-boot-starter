@@ -99,6 +99,12 @@ shanhai:
     sleep-batch-size: 100
     sleep-min-times: 100
     sleep-max-times: 100
+  iplimit:
+    enable: true
+    channels:
+      shanhai-biz-1:
+        - "192.168.1.0/24"
+        - "10.0.0.0/8"
 app:
   version: 'envdecode::ZvU5Odzu9RQcMcAfxyaoVg=='
 

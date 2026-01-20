@@ -21,6 +21,8 @@ public class DecodeBodyApiController {
      * @param body
      * @return
      */
+//    @IpLimit(channel = "shanhai-biz-1")
+    @EncodeBody(ruleId = "shanhai-biz-1")
     @RequestMapping(value = "/decodeAll")
     @ResponseBody
     public String decodeAll(@RequestBody String body){

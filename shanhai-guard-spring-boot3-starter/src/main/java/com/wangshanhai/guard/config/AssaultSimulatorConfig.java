@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @Builder
 @Data
+@RefreshScope
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "shanhai.assaultsimulator")

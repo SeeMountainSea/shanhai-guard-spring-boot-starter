@@ -38,4 +38,8 @@ public interface ShanHaiGuardErrorCode {
      * 模拟阻断异常
      */
     String ASSAULT_SIMULATOR_ERROR="210008";
+    /**
+     * IP限制
+     */
+    String IP_FORBIDDEN="210009";
 }

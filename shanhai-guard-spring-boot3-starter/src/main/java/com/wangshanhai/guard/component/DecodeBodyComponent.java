@@ -70,7 +70,11 @@ public class DecodeBodyComponent extends RequestBodyAdviceAdapter {
             String source= IOUtils.toString(inputMessage.getBody(), "utf-8");
             String sourceContent=null;
             if(decodeBodyConfig.getMode()==1){
-                sourceContent=decodeBodyService.decodeRequestBody(source);
+                if(parameter.hasMethodAnnotation(DecodeBody.class)){
+                    sourceContent=decodeBodyService.decodeRequestBody( parameter.getMethodAnnotation(DecodeBody.class).ruleId(),source);
+                }else{
+                    sourceContent=decodeBodyService.decodeRequestBody(source);
+                }
             }else {
                 sourceContent=decodeBodyService.decodeRequestBody( parameter.getMethodAnnotation(DecodeBody.class).ruleId(),source);
             }

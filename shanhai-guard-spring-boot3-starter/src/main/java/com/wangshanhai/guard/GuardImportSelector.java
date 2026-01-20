@@ -14,19 +14,20 @@ public class GuardImportSelector implements ImportSelector {
                 "com.wangshanhai.guard.component.FileGuardComponent",
                 "com.wangshanhai.guard.component.PasswdGuardComponent",
                 "com.wangshanhai.guard.component.WebGuardComponent",
-                "com.wangshanhai.guard.component.MysqlGuardComponent",
                 "com.wangshanhai.guard.component.DataGuardComponent",
                 "com.wangshanhai.guard.component.RespDataGuardComponent",
                 "com.wangshanhai.guard.component.EncodeBodyComponent",
                 "com.wangshanhai.guard.component.DecodeBodyComponent",
                 "com.wangshanhai.guard.component.SensitiveWordsComponent",
-                "com.wangshanhai.guard.component.DataAuditComponent",
                 "com.wangshanhai.guard.component.ReqParamsSensitiveComponent",
                 "com.wangshanhai.guard.component.RespBodySensitiveComponent",
                 "com.wangshanhai.guard.component.MethodDataGuardComponent",
                 "com.wangshanhai.guard.component.GuardSystemResourceComponent",
+                "com.wangshanhai.guard.component.IpLimitComponent",
+                "com.wangshanhai.guard.component.AssaultSimulatorComponent",
                 "com.wangshanhai.guard.interceptor.AssaultSimulatorInterceptor",
-                "com.wangshanhai.guard.interceptor.FileScanInterceptor"
+                "com.wangshanhai.guard.interceptor.FileScanInterceptor",
+                "com.wangshanhai.guard.interceptor.IpLimitInterceptor"
         };
     }
 }

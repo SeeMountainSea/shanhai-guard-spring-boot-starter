@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * 资源峰值模拟配置
@@ -12,6 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Builder
 @Data
+@RefreshScope
 @NoArgsConstructor
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "shanhai.systempeak")

@@ -1,5 +1,7 @@
 package com.wangshanhai.guard.service;
 
+import org.springframework.http.server.ServerHttpResponse;
+
 /**
  * @author Shmily
  */
@@ -9,7 +11,7 @@ public interface EncodeBodyService {
      * @param body 加密报文
      * @return
      */
-    default String encodeRespBody(String body){
+    default Object encodeRespBody(Object body, ServerHttpResponse response){
         return body;
     };
 
@@ -19,7 +21,8 @@ public interface EncodeBodyService {
      * @param body 加密报文
      * @return
      */
-    default String encodeRespBody(String ruleId,String body){
-        return ruleId+"@"+body;
+    default Object encodeRespBody(String ruleId,Object body,ServerHttpResponse response){
+        return body;
     };
+
 }
