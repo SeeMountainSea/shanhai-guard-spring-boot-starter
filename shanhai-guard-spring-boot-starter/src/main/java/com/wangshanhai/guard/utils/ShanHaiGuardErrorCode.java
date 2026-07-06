@@ -42,4 +42,8 @@ public interface ShanHaiGuardErrorCode {
      * IP限制
      */
     String IP_FORBIDDEN="210009";
+    /**
+     * 立即释放内存jvm参数申请
+     */
+    String SYTEM_PREHEAT_UNSAFE="210010";
 }

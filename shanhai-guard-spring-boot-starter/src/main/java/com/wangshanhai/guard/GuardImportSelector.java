@@ -29,7 +29,8 @@ public class GuardImportSelector implements ImportSelector {
                 "com.wangshanhai.guard.component.IpLimitComponent",
                 "com.wangshanhai.guard.interceptor.AssaultSimulatorInterceptor",
                 "com.wangshanhai.guard.interceptor.FileScanInterceptor",
-                "com.wangshanhai.guard.interceptor.IpLimitInterceptor"
+                "com.wangshanhai.guard.interceptor.IpLimitInterceptor",
+                "com.wangshanhai.guard.component.SystemPreheatComponent"
         };
     }
 }
